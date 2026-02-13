@@ -2,6 +2,7 @@ package org.ewsd.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.ewsd.entity.permission.Permission;
+import org.ewsd.exception.custom.ResourceNotFoundException;
 import org.ewsd.repository.user.UserRepository;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.user.User;
@@ -23,13 +24,13 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("User was not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User was not found"));
     }
 
     @Transactional(readOnly = true)
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("User was not found with email" + email));
+                .orElseThrow(() -> new ResourceNotFoundException("User was not found with email" + email));
     }
 
     @Transactional(readOnly = true)
