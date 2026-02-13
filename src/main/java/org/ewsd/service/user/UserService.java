@@ -2,7 +2,7 @@ package org.ewsd.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.ewsd.entity.permission.Permission;
-import org.ewsd.entity.repository.UserRepository;
+import org.ewsd.repository.user.UserRepository;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.user.User;
 import org.springframework.security.core.userdetails.UserDetails;

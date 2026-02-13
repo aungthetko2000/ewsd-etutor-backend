@@ -1,4 +1,4 @@
-package org.ewsd.entity.repository;
+package org.ewsd.repository.user;
 
 import org.ewsd.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
