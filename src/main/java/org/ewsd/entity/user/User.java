@@ -70,7 +70,6 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
     private Student student;
 
-
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

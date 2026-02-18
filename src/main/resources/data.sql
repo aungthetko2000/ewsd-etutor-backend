@@ -23,11 +23,3 @@ WHERE r.name = 'STUDENT'
   AND p.name IN (
     'VIEW_STUDENT_DASHBOARD'
     );
-
-INSERT INTO role_permissions (role_id, permission_id)
-SELECT r.id, p.id
-FROM roles r, permissions p
-WHERE r.name = 'TUTOR'
-   AND p.name IN (
-    'VIEW_TUTOR_DASHBOARD'
-  );
