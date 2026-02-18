@@ -3,9 +3,13 @@ package org.ewsd.service.data;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.staff.Staff;
+import org.ewsd.entity.student.Student;
+import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
 import org.ewsd.repository.role.RoleRepository;
 import org.ewsd.repository.staff.StaffRepository;
+import org.ewsd.repository.student.StudentRepository;
+import org.ewsd.repository.tutor.TutorRepository;
 import org.ewsd.repository.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +26,8 @@ public class DataSeeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final StaffRepository staffRepository;
+    private final StudentRepository studentRepository;
+    private final TutorRepository tutorRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -31,7 +37,10 @@ public class DataSeeder implements CommandLineRunner {
         Role tutorRole = roleRepository.findByName("TUTOR")
                 .orElseThrow(() -> new RuntimeException("STUDENT role not found! Run data.sql first."));
 
-        User staff = User.builder()
+        Role studentRole = roleRepository.findByName("STUDENT")
+                .orElseThrow(()->new RuntimeException("Student role not found"));
+
+        User staffUser = User.builder()
                 .email("staff@example.com")
                 .password(passwordEncoder.encode("password123"))
                 .fullName("John Staff")
@@ -44,18 +53,12 @@ public class DataSeeder implements CommandLineRunner {
                 .build();
 
         staffUser = userRepository.save(staffUser);
-
         Staff staff = Staff.builder()
                 .fullName("John Smith")
                 .user(staffUser)
                 .build();
-
         staffRepository.save(staff);
 
-
-//        STUDENT SEED
-        Role studentRole = roleRepository.findByName("STUDENT")
-                .orElseThrow(()->new RuntimeException("Student role not found"));
 
         User studentUser = User.builder()
                 .email("student@example.com")
@@ -68,8 +71,13 @@ public class DataSeeder implements CommandLineRunner {
                 .roles(Set.of(studentRole))
                 .customPermissions(new HashSet<>())
                 .build();
-
-        staffRepository.save(student);
+        studentUser = userRepository.save(studentUser);
+        Student student = Student
+                .builder()
+                .fullName("Alice Student")
+                .user(studentUser)
+                .build();
+        studentRepository.save(student);
 
         User tutorUser = User.builder()
                 .email("tutor@example.com")
@@ -90,14 +98,7 @@ public class DataSeeder implements CommandLineRunner {
                 .user(tutorUser)
                 .build();
         tutorRepository.save(tutor);
-        studentUser = userRepository.save(studentUser);
 
-        Student student = Student.builder()
-                .fullName("Student1")
-                .user(studentUser)
-                .build();
-
-        studentRepository.save(student);
     }
 
 }
