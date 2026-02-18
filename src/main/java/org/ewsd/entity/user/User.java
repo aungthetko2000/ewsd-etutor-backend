@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.ewsd.entity.permission.Permission;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.staff.Staff;
+import org.ewsd.entity.student.Student;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -64,6 +65,9 @@ public class User implements UserDetails {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Staff staff;
+
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    private Student Student;
 
     @PrePersist
     protected void onCreate() {

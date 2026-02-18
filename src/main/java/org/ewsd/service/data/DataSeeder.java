@@ -3,11 +3,9 @@ package org.ewsd.service.data;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.staff.Staff;
-import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
 import org.ewsd.repository.role.RoleRepository;
 import org.ewsd.repository.staff.StaffRepository;
-import org.ewsd.repository.tutor.TutorRepository;
 import org.ewsd.repository.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +22,6 @@ public class DataSeeder implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
     private final StaffRepository staffRepository;
-    private final TutorRepository tutorRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -46,11 +43,30 @@ public class DataSeeder implements CommandLineRunner {
                 .customPermissions(new HashSet<>())
                 .build();
 
-        staff = userRepository.save(staff);
+        staffUser = userRepository.save(staffUser);
 
-        Staff student = Staff.builder()
+        Staff staff = Staff.builder()
                 .fullName("John Smith")
-                .user(staff)
+                .user(staffUser)
+                .build();
+
+        staffRepository.save(staff);
+
+
+//        STUDENT SEED
+        Role studentRole = roleRepository.findByName("STUDENT")
+                .orElseThrow(()->new RuntimeException("Student role not found"));
+
+        User studentUser = User.builder()
+                .email("student@example.com")
+                .password(passwordEncoder.encode("password123"))
+                .fullName("Student1")
+                .accountNonLocked(true)
+                .enabled(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .roles(Set.of(studentRole))
+                .customPermissions(new HashSet<>())
                 .build();
 
         staffRepository.save(student);
@@ -74,6 +90,14 @@ public class DataSeeder implements CommandLineRunner {
                 .user(tutorUser)
                 .build();
         tutorRepository.save(tutor);
+        studentUser = userRepository.save(studentUser);
+
+        Student student = Student.builder()
+                .fullName("Student1")
+                .user(studentUser)
+                .build();
+
+        studentRepository.save(student);
     }
 
 }
