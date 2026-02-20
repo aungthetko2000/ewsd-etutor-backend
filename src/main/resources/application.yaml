@@ -4,9 +4,9 @@ spring:
 
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ewsd_local
+    url: jdbc:mysql://localhost:3306/ewsd
     username: root
-    password: letmein
+    password: StrongRoot@123!
 
   jpa:
     defer-datasource-initialization: true
