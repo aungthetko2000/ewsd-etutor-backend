@@ -15,7 +15,9 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -59,25 +61,25 @@ public class DataSeeder implements CommandLineRunner {
                 .build();
         staffRepository.save(staff);
 
+        List<User> userLists = List.of(
+                new User(null, "student1@example.com", passwordEncoder.encode("password")
+                , "Alice", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), new HashSet<>(),
+                        new HashSet<>(), null, null),
+                new User(null, "student2@example.com", passwordEncoder.encode("password")
+                        , "Daniel", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), new HashSet<>(),
+                        new HashSet<>(), null, null)
+        );
 
-        User studentUser = User.builder()
-                .email("student@example.com")
-                .password(passwordEncoder.encode("password123"))
-                .fullName("Student1")
-                .accountNonLocked(true)
-                .enabled(true)
-                .accountNonExpired(true)
-                .credentialsNonExpired(true)
-                .roles(Set.of(studentRole))
-                .customPermissions(new HashSet<>())
-                .build();
-        studentUser = userRepository.save(studentUser);
-        Student student = Student
-                .builder()
-                .fullName("Alice Student")
-                .user(studentUser)
-                .build();
-        studentRepository.save(student);
+        List<User> savedUser = userRepository.saveAll(userLists);
+
+        List<Student> studentList = savedUser.stream().map(
+                user -> Student.builder()
+                        .fullName(user.getFullName())
+                        .user(user).build()
+        ).toList();
+
+        studentRepository.saveAll(studentList);
+
 
         User tutorUser = User.builder()
                 .email("tutor@example.com")
