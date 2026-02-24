@@ -103,9 +103,20 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getAllPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getName()))
-                .collect(Collectors.toList());
+
+        Set<GrantedAuthority> authorities = new HashSet<>();
+
+        // Add role authorities (Spring expects ROLE_ prefix)
+        roles.forEach(role ->
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName()))
+        );
+
+        // Add permission authorities
+        getAllPermissions().forEach(permission ->
+                authorities.add(new SimpleGrantedAuthority(permission.getName()))
+        );
+
+        return authorities;
     }
 
     @Override

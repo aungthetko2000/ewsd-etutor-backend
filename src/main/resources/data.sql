@@ -1,7 +1,8 @@
 INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_STUDENT_DASHBOARD', 'Can view dashboard', 'DASHBOARD'),
 ('VIEW_TUTOR_DASHBOARD', 'Can view dashboard', 'DASHBOARD'),
-('VIEW_STAFF_DASHBOARD', 'Can view dashboard', 'DASHBOARD');
+('VIEW_STAFF_DASHBOARD', 'Can view dashboard', 'DASHBOARD'),
+('BULK_ALLOCATION','Can Allocate bulk', 'ALLOCATE');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
@@ -13,7 +14,8 @@ SELECT r.id, p.id
 FROM roles r, permissions p
 WHERE r.name = 'STAFF'
    AND p.name IN (
-    'VIEW_STAFF_DASHBOARD'
+    'VIEW_STAFF_DASHBOARD',
+    'BULK_ALLOCATION'
   );
 
 INSERT INTO role_permissions (role_id, permission_id)

@@ -40,6 +40,47 @@ public class DataSeeder implements CommandLineRunner {
         Role studentRole = roleRepository.findByName("STUDENT")
                 .orElseThrow(()->new RuntimeException("Student role not found"));
 
+        // ✅ Prevent duplicate seeding
+        if (studentRepository.count() == 0) {
+
+            String[] studentNames = {
+                    "Mg Mg",
+                    "Aung Aung",
+                    "Kyaw Kyaw",
+                    "Aye Aye",
+                    "Hla Hla",
+                    "Su Su",
+                    "Moe Moe",
+                    "Zaw Zaw",
+                    "Ko Ko",
+                    "Thura"
+            };
+
+            for (int i = 0; i < studentNames.length; i++) {
+
+                User user = User.builder()
+                        .email("student" + i + "@example.com")
+                        .password(passwordEncoder.encode("password123"))
+                        .fullName(studentNames[i])
+                        .accountNonLocked(true)
+                        .enabled(true)
+                        .accountNonExpired(true)
+                        .credentialsNonExpired(true)
+                        .roles(Set.of(studentRole))
+                        .customPermissions(new HashSet<>())
+                        .build();
+
+                user = userRepository.save(user);
+
+                Student student = Student.builder()
+                        .fullName(studentNames[i])
+                        .user(user)
+                        .build();   // tutor is NULL → Unassigned
+
+                studentRepository.save(student);
+            }
+        }
+
         User staffUser = User.builder()
                 .email("staff@example.com")
                 .password(passwordEncoder.encode("password123"))
