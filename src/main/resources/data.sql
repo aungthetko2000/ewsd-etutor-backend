@@ -14,6 +14,7 @@ FROM roles r, permissions p
 WHERE r.name = 'STAFF'
    AND p.name IN (
     'VIEW_STAFF_DASHBOARD'
+    'BULK_ALLOCATION'
   );
 
 INSERT INTO role_permissions (role_id, permission_id)

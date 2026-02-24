@@ -34,9 +34,6 @@ public class DataSeeder implements CommandLineRunner {
         Role staffRole = roleRepository.findByName("STAFF")
                 .orElseThrow(() -> new RuntimeException("STUDENT role not found! Run data.sql first."));
 
-        Role tutorRole = roleRepository.findByName("TUTOR")
-                .orElseThrow(() -> new RuntimeException("STUDENT role not found! Run data.sql first."));
-
         Role studentRole = roleRepository.findByName("STUDENT")
                 .orElseThrow(()->new RuntimeException("Student role not found"));
 
@@ -78,26 +75,6 @@ public class DataSeeder implements CommandLineRunner {
                 .user(studentUser)
                 .build();
         studentRepository.save(student);
-
-        User tutorUser = User.builder()
-                .email("tutor@example.com")
-                .password(passwordEncoder.encode("password123"))
-                .fullName("Daniel Tutor")
-                .accountNonLocked(true)
-                .enabled(true)
-                .accountNonExpired(true)
-                .credentialsNonExpired(true)
-                .roles(Set.of(tutorRole))
-                .customPermissions(new HashSet<>())
-                .build();
-
-        tutorUser = userRepository.save(tutorUser);
-
-        Tutor tutor = Tutor.builder()
-                .fullName("Astro Smith")
-                .user(tutorUser)
-                .build();
-        tutorRepository.save(tutor);
 
     }
 
