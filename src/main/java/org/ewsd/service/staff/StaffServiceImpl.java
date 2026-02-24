@@ -30,8 +30,8 @@ public class StaffServiceImpl implements StaffService {
         List<TutorAllocationResponse> responses = new ArrayList<>();
 
         for (Student student : students) {
-            if (student.getPersonalTutor() != null &&
-                    student.getPersonalTutor().getId().equals(tutorId)) {
+            if (student.getTutor() != null &&
+                    student.getTutor().getId().equals(tutorId)) {
                 responses.add(TutorAllocationResponse.builder()
                         .studentId(student.getId())
                         .message("Student already assigned to this tutor")
@@ -39,7 +39,7 @@ public class StaffServiceImpl implements StaffService {
                 continue;
             }
 
-            student.setPersonalTutor(tutor);
+            student.setTutor(tutor);
 
             responses.add(TutorAllocationResponse.builder()
                     .studentId(student.getId())

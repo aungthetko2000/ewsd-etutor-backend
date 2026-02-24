@@ -29,7 +29,7 @@ public class Tutor {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
-    @OneToMany(mappedBy = "personalTutor")
+    @OneToMany(mappedBy = "tutor")
     private List<Student> assignedStudents = new ArrayList<>();
 
 }
