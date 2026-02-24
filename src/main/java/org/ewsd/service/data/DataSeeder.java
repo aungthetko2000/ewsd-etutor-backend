@@ -39,7 +39,6 @@ public class DataSeeder implements CommandLineRunner {
         Role studentRole = roleRepository.findByName("STUDENT")
                 .orElseThrow(()->new RuntimeException("Student role not found"));
 
-        // ✅ Prevent duplicate seeding
         if (studentRepository.count() == 0) {
 
             String[] studentNames = {
@@ -100,10 +99,10 @@ public class DataSeeder implements CommandLineRunner {
         staffRepository.save(staff);
 
         List<User> userLists = List.of(
-                new User(null, "student1@example.com", passwordEncoder.encode("password")
+                new User(null, "alice@example.com", passwordEncoder.encode("password")
                 , "Alice", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), new HashSet<>(),
                         new HashSet<>(), null, null),
-                new User(null, "student2@example.com", passwordEncoder.encode("password")
+                new User(null, "daniel@example.com", passwordEncoder.encode("password")
                         , "Daniel", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), new HashSet<>(),
                         new HashSet<>(), null, null)
         );

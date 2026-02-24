@@ -26,6 +26,8 @@ public class Student {
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
 
+    private String avatarUrl;
+
     @ManyToOne
     @JoinColumn(name = "tutor_id")
     private Tutor tutor;
