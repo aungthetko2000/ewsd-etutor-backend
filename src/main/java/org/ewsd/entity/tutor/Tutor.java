@@ -5,7 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ewsd.entity.student.Student;
 import org.ewsd.entity.user.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tutors")
@@ -23,4 +27,8 @@ public class Tutor {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+    @OneToMany(mappedBy = "personalTutor")
+    private List<Student> assignedStudents = new ArrayList<>();
+
 }
