@@ -43,7 +43,7 @@ public class StaffServiceImpl implements StaffService {
 
             responses.add(TutorAllocationResponse.builder()
                     .studentId(student.getId())
-                    .studentName(student.getUser().getFullName())
+                    .studentName(student.getUser().getFirstName() + student.getUser().getLastName())
                     .studentEmail(student.getUser().getEmail())
                     .tutorId(tutor.getId())
                     .tutorName(tutor.getFullName())

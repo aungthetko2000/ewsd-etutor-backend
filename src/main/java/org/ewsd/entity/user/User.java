@@ -36,7 +36,10 @@ public class User implements UserDetails {
     private String password;
 
     @Column(nullable = false)
-    private String fullName;
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
     private boolean enabled = true;
     private boolean accountNonExpired = true;

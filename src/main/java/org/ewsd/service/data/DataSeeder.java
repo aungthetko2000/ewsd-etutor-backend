@@ -42,7 +42,8 @@ public class DataSeeder implements CommandLineRunner {
         User staffUser = User.builder()
                 .email("staff@example.com")
                 .password(passwordEncoder.encode("password123"))
-                .fullName("John Staff")
+                .firstName("John")
+                .lastName("Staff")
                 .accountNonLocked(true)
                 .enabled(true)
                 .accountNonExpired(true)
@@ -53,17 +54,17 @@ public class DataSeeder implements CommandLineRunner {
 
         staffUser = userRepository.save(staffUser);
         Staff staff = Staff.builder()
-                .fullName("John Smith")
+                .fullName(staffUser.getFirstName() + staffUser.getLastName())
                 .user(staffUser)
                 .build();
         staffRepository.save(staff);
 
         List<User> userLists = List.of(
                 new User(null, "student1@example.com", passwordEncoder.encode("password")
-                , "Alice", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), new HashSet<>(),
+                , "Alice", "Wonderland", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), new HashSet<>(),
                         new HashSet<>(), null, null),
                 new User(null, "student2@example.com", passwordEncoder.encode("password")
-                        , "Daniel", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), new HashSet<>(),
+                        , "Daniel", "Smith", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), new HashSet<>(),
                         new HashSet<>(), null, null)
         );
 
@@ -71,7 +72,7 @@ public class DataSeeder implements CommandLineRunner {
 
         List<Student> studentList = savedUser.stream().map(
                 user -> Student.builder()
-                        .fullName(user.getFullName())
+                        .fullName(user.getFirstName() + " " + user.getLastName())
                         .user(user).build()
         ).toList();
 

@@ -19,6 +19,7 @@ public class TutorServiceImpl implements TutorService {
                         .id(tutor.getId())
                         .fullName(tutor.getFullName())
                         .email(tutor.getUser().getEmail())
+                        .expertise(tutor.getExpertise())
                         .build())
                 .toList();
     }

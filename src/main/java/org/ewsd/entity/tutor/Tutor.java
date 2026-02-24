@@ -23,6 +23,7 @@ public class Tutor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fullName;
+    private String expertise;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

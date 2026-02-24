@@ -28,6 +28,7 @@ public class LoginResponse {
     public static class UserInfo {
         private Long id;
         private String email;
-        private String fullName;
+        private String firstName;
+        private String lastName;
     }
 }

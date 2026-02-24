@@ -50,7 +50,8 @@ public class AuthServiceImpl implements AuthService {
                 .userInfo(LoginResponse.UserInfo.builder()
                         .id(user.getId())
                         .email(user.getEmail())
-                        .fullName(user.getFullName())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
                         .build())
                 .build();
     }
@@ -82,7 +83,8 @@ public class AuthServiceImpl implements AuthService {
                 .userInfo(LoginResponse.UserInfo.builder()
                         .id(user.getId())
                         .email(user.getEmail())
-                        .fullName(user.getFullName())
+                        .firstName(user.getFirstName())
+                        .lastName(user.getLastName())
                         .build())
                 .build();
     }
