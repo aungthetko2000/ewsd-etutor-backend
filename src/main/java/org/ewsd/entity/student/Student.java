@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
 
 @Entity
@@ -24,4 +25,9 @@ public class Student {
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "personal_tutor_id")
+    private Tutor personalTutor;
+
 }

@@ -9,17 +9,13 @@ import org.ewsd.entity.permission.Permission;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.staff.Staff;
 import org.ewsd.entity.student.Student;
-import org.ewsd.entity.tutor.Tutor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -103,9 +99,12 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getAllPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getName()))
-                .collect(Collectors.toList());
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        getRoles().forEach(role ->
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
+        getAllPermissions().forEach(permission ->
+                authorities.add(new SimpleGrantedAuthority(permission.getName())));
+        return authorities;
     }
 
     @Override
