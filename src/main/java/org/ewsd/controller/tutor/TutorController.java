@@ -21,7 +21,7 @@ public class TutorController {
     private final TutorService tutorService;
 
     @GetMapping("/fetchAllTutors")
-    //  @PreAuthorize("hasRole('STAFF') AND hasAuthority('BULK_ALLOCATION')")
+    @PreAuthorize("hasRole('STAFF') AND hasAuthority('BULK_ALLOCATION')")
     public ResponseEntity<ApiResponse<List<TutorResponse>>> fetchAllTutors() {
         List<TutorResponse> tutorResponse = tutorService.getAllTutors();
         ApiResponse<List<TutorResponse>> response = ApiResponse.success(tutorResponse,
