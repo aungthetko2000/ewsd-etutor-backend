@@ -61,17 +61,32 @@ public class DataSeeder implements CommandLineRunner {
         staffRepository.save(staff);
 
         List<User> userLists = List.of(
-                new User(null, "alice@example.com", passwordEncoder.encode("password")
-                , "Alice", "Wonderland", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole),
+                new User(null, "mgmg@example.com", passwordEncoder.encode("password")
+                , "Mg", "Mg", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole),
                         new HashSet<>(), null, null),
-                new User(null, "daniel@example.com", passwordEncoder.encode("password"),
-                        "Daniel", "Smith", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole)
+                new User(null, "aungaung@example.com", passwordEncoder.encode("password"),
+                        "Aung", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole)
                         , new HashSet<>(), null, null),
-                new User(null, "student1@example.com", passwordEncoder.encode("password")
-                        , "Will", "Smith", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole),
+                new User(null, "kyaw@example.com", passwordEncoder.encode("password")
+                        , "Kyaw", "Kyaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole),
                         new HashSet<>(), null, null),
-                new User(null, "student2@example.com", passwordEncoder.encode("password"),
-                        "John", "Cena", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole)
+                new User(null, "hla@example.com", passwordEncoder.encode("password"),
+                        "Hla", "Hla", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole)
+                        , new HashSet<>(), null, null),
+                new User(null, "su@example.com", passwordEncoder.encode("password"),
+                "Su", "Su", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole)
+                        , new HashSet<>(), null, null),
+                new User(null, "moe@example.com", passwordEncoder.encode("password"),
+                "Moe", "Moe", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole)
+                        , new HashSet<>(), null, null),
+                new User(null, "zaw@example.com", passwordEncoder.encode("password"),
+                        "Zaw", "Zaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole)
+                        , new HashSet<>(), null, null),
+                new User(null, "ko@example.com", passwordEncoder.encode("password"),
+                        "Ko", "Ko", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole)
+                        , new HashSet<>(), null, null),
+                new User(null, "myoaung@example.com", passwordEncoder.encode("password"),
+                        "Myo", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), Set.of(studentRole)
                         , new HashSet<>(), null, null)
         );
 
