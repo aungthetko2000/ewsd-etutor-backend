@@ -7,6 +7,7 @@ import org.ewsd.repository.student.StudentRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,13 @@ public class StudentService {
                 .toList();
     }
 
+    public List<StudentResponseDto> getAssignedStudents(Long tutorId) {
+        List<Student> list = studentRepository.findByTutorId(tutorId);
+        return list.stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
     private StudentResponseDto mapToDto(Student student) {
         return StudentResponseDto.builder()
                 .id(student.getId())
@@ -38,4 +46,5 @@ public class StudentService {
                 .assigned(student.getTutor() != null)
                 .build();
     }
+
 }
