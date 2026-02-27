@@ -37,7 +37,7 @@ public class AuthServiceImpl implements AuthService {
         List<String> permissions = userService.getUserPermissions(request.getEmail());
         List<String> roles = userService.getUserRoles(request.getEmail());
 
-        String accessToken = jwtUtil.generateAccessToken(userDetails, permissions, roles);
+        String accessToken = jwtUtil.generateAccessToken(user, userDetails, permissions, roles);
         String refreshToken = jwtUtil.generateRefreshToken(userDetails);
 
         return LoginResponse.builder()
@@ -71,7 +71,7 @@ public class AuthServiceImpl implements AuthService {
 
         List<String> permissions = userService.getUserPermissions(username);
         List<String> roles = userService.getUserRoles(username);
-        String newAccessToken = jwtUtil.generateAccessToken(userDetails, permissions, roles);
+        String newAccessToken = jwtUtil.generateAccessToken(user, userDetails, permissions, roles);
 
         return LoginResponse.builder()
                 .accessToken(newAccessToken)
