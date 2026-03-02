@@ -4,37 +4,43 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_STAFF_DASHBOARD', 'Can view dashboard', 'DASHBOARD'),
 ('BULK_ALLOCATION', 'Can allocate bulk', 'ALLOCATE'),
 ('VIEW_BLOG_LIST', 'Can allocate bulk', 'ALLOCATE'),
-('VIEW_ASSIGNED_STUDENTS', 'Can view assigned students', 'ASSIGNED');
+('VIEW_ASSIGNED_STUDENTS', 'Can view assigned students', 'ASSIGNED'),
+('CREATE_BLOG', 'Can create blog', 'BLOG');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
 ('TUTOR', 'Tutor role'),
 ('STAFF', 'Staff/Admin role');
 
+-- STAFF PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r, permissions p
 WHERE r.name = 'STAFF'
-   AND p.name IN (
-    'VIEW_STAFF_DASHBOARD',
-    'BULK_ALLOCATION'
-  );
+  AND p.name IN (
+'VIEW_STAFF_DASHBOARD',
+'BULK_ALLOCATION'
+    );
 
+-- STUDENT PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r, permissions p
 WHERE r.name = 'STUDENT'
   AND p.name IN (
-    'VIEW_STUDENT_DASHBOARD',
-    'VIEW_BLOG_LIST'
+'VIEW_STUDENT_DASHBOARD',
+'VIEW_BLOG_LIST',
+'CREATE_BLOG'
     );
 
+-- TUTOR PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r, permissions p
 WHERE r.name = 'TUTOR'
   AND p.name IN (
-    'VIEW_TUTOR_DASHBOARD',
-    'VIEW_BLOG_LIST',
-    'VIEW_ASSIGNED_STUDENTS'
+'VIEW_TUTOR_DASHBOARD',
+'VIEW_BLOG_LIST',
+'VIEW_ASSIGNED_STUDENTS',
+'CREATE_BLOG'
     );
