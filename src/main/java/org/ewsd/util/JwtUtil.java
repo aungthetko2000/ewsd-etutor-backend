@@ -78,6 +78,11 @@ public class JwtUtil {
         return (List<String>) claims.get("roles");
     }
 
+    public String extractEmail(String token) {
+        Claims claims = extractAllClaims(token);
+        return (String) claims.get("email");
+    }
+
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ewsd.entity.meeting.Meeting;
 import org.ewsd.entity.student.Student;
 import org.ewsd.entity.user.User;
 
@@ -31,5 +32,9 @@ public class Tutor {
 
     @OneToMany(mappedBy = "tutor")
     private List<Student> assignedStudents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tutor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Meeting> meetings = new ArrayList<>();
+
 
 }

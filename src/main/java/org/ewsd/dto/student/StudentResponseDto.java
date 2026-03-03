@@ -13,5 +13,5 @@ public class StudentResponseDto {
     private String avatarUrl;
     private Long currentTutorId;
     private boolean assigned;
-
+    private String email;
 }
