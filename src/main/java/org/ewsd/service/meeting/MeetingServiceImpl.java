@@ -3,6 +3,7 @@ package org.ewsd.service.meeting;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.constants.SecurityConstants;
+import org.ewsd.dto.meeting.MeetingConfirmationRequest;
 import org.ewsd.dto.schedule.MeetingRequestDto;
 import org.ewsd.dto.schedule.MeetingResponseDto;
 import org.ewsd.dto.student.StudentResponseDto;
@@ -11,11 +12,14 @@ import org.ewsd.entity.student.Student;
 import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
 import org.ewsd.enumeration.MeetingStatus;
+import org.ewsd.enumeration.NotificationType;
 import org.ewsd.repository.meeting.MeetingRepository;
 import org.ewsd.repository.student.StudentRepository;
 import org.ewsd.repository.tutor.TutorRepository;
 import org.ewsd.repository.user.UserRepository;
+import org.ewsd.service.notification.NotificationService;
 import org.ewsd.util.JwtUtil;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +35,7 @@ public class MeetingServiceImpl implements MeetingService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final StudentRepository studentRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -69,7 +74,23 @@ public class MeetingServiceImpl implements MeetingService {
                 .virtualPlatformLink(dto.getVirtualPlatformLink())
                 .build();
 
-        return mapToResponse(meetingRepository.save(meeting));
+        Meeting savedMeeting = meetingRepository.save(meeting);
+        MeetingResponseDto response = mapToResponse(savedMeeting);
+
+        studentUsers.forEach(studentUser -> {
+            String message = String.format("New meeting scheduled: '%s' on %s",
+                    savedMeeting.getMeetingTitle(),
+                    savedMeeting.getScheduledAt());
+
+            notificationService.sendAndSave(
+                    studentUser,
+                    savedMeeting,
+                    NotificationType.MEETING_SCHEDULED,
+                    message
+            );
+        });
+
+        return response;
     }
 
     @Override
@@ -99,8 +120,21 @@ public class MeetingServiceImpl implements MeetingService {
     }
 
     @Override
-    public List<String> getAllStudentEmailByTutor(Long tutorId, String email) {
-        return studentRepository.findStudentEmailsByTutorAndEmailLike(tutorId, email);
+    public List<String> getAllStudentEmailByTutor(Long userId, String email) {
+        return studentRepository.findStudentEmailsByTutorAndEmailLike(userId, email);
+    }
+
+    @Override
+    @Transactional
+    public void updateMeetingStatus(Long id, MeetingConfirmationRequest request) {
+        Meeting meeting = meetingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Meeting was not found"));
+
+        if (request.getMeetingStatus() == MeetingStatus.PENDING) {
+            return;
+        }
+        meeting.setStatus(request.getMeetingStatus() == MeetingStatus.CONFIRMED
+                        ? MeetingStatus.CONFIRMED : MeetingStatus.DECLINED);
     }
 
 

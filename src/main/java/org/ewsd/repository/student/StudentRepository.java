@@ -18,11 +18,11 @@ public  interface StudentRepository extends JpaRepository<Student, Long> {
         select distinct u.email
         from Student s
         join s.user u
-        where s.tutor.id = :tutorId
+        where s.tutor.user.id = :userId
           and lower(
             function('substring_index', u.email, '@', 1)
           ) like lower(concat(:email, '%'))
     """)
-    List<String> findStudentEmailsByTutorAndEmailLike(@Param("tutorId") Long tutorId, @Param("email") String email);
+    List<String> findStudentEmailsByTutorAndEmailLike(@Param("userId") Long userId, @Param("email") String email);
 
 }

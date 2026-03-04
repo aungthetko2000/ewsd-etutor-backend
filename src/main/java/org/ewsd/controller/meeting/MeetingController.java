@@ -2,6 +2,7 @@ package org.ewsd.controller.meeting;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.ewsd.dto.meeting.MeetingConfirmationRequest;
 import org.ewsd.dto.response.ApiResponse;
 import org.ewsd.dto.schedule.MeetingRequestDto;
 import org.ewsd.dto.schedule.MeetingResponseDto;
@@ -39,11 +40,17 @@ public class MeetingController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/{tutorId}/students/emails")
+    @GetMapping("/{userId}/students/emails")
     @PreAuthorize("hasRole('TUTOR') AND hasAuthority('VIEW_STUDENT_EMAIL')")
-    public ResponseEntity<ApiResponse<List<String>>> getStudentEmails(@PathVariable Long tutorId, @RequestParam String email) {
-        List<String> emailResponse = meetingService.getAllStudentEmailByTutor(tutorId, email);
+    public ResponseEntity<ApiResponse<List<String>>> getStudentEmails(@PathVariable Long userId, @RequestParam String email) {
+        List<String> emailResponse = meetingService.getAllStudentEmailByTutor(userId, email);
         ApiResponse<List<String>> response = ApiResponse.success(emailResponse, "Email list successfully return");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/status/{meetingId}")
+    public ResponseEntity<String> updateMeetingStatus(@PathVariable Long meetingId, @RequestBody MeetingConfirmationRequest request) {
+        meetingService.updateMeetingStatus(meetingId, request);
+        return new ResponseEntity<>("Successfully Updated", HttpStatus.OK);
     }
 }
