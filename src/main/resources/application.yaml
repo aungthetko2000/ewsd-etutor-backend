@@ -1,3 +1,7 @@
+app:
+  upload:
+    dir: ${user.home}/Documents/blogs
+
 spring:
   application:
     name: ewsd-etutor-backend
@@ -6,7 +10,7 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: JDBC:mysql://localhost:3306/ewsd_local
     username: root
-    password:
+    password: letmein
 
   jpa:
     defer-datasource-initialization: true

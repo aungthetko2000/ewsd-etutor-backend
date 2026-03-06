@@ -7,6 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class BlogCreateRequestDto {
 
     private String title;
-    private String description;
-    private MultipartFile image;   // rename to image
+    private String content;
+
 }

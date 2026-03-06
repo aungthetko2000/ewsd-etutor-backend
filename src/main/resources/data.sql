@@ -3,15 +3,14 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_TUTOR_DASHBOARD', 'Can view dashboard', 'DASHBOARD'),
 ('VIEW_STAFF_DASHBOARD', 'Can view dashboard', 'DASHBOARD'),
 ('BULK_ALLOCATION', 'Can allocate bulk', 'ALLOCATE'),
-('VIEW_BLOG_LIST', 'Can allocate bulk', 'ALLOCATE'),
+('VIEW_BLOG_LIST', 'Can view blog list', 'BLOG'),
 ('VIEW_ASSIGNED_STUDENTS', 'Can view assigned students', 'ASSIGNED'),
 ('CREATE_BLOG', 'Can create blog', 'BLOG'),
-('VIEW_ASSIGNED_STUDENTS', 'Can view assigned students', 'ASSIGNED'),
 ('VIEW_ALL_SCHEDULE', 'Can view all schedule', 'SCHEDULE'),
 ('VIEW_STUDENT_EMAIL', 'Can view all student email', 'SCHEDULE'),
 ('SCHEDULE_MEETING', 'Can schedule meeting', 'SCHEDULE'),
-('VIEW_NOTIFICATION', 'Can schedule meeting', 'SCHEDULE'),
-('UPDATE_NOTIFICATION', 'Can schedule meeting', 'SCHEDULE');
+('VIEW_NOTIFICATION', 'Can schedule meeting', 'NOTIFICATION'),
+('UPDATE_NOTIFICATION', 'Can schedule meeting', 'NOTIFICATION');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
@@ -37,7 +36,8 @@ WHERE r.name = 'STUDENT'
     'VIEW_STUDENT_DASHBOARD',
     'VIEW_BLOG_LIST',
     'VIEW_NOTIFICATION',
-    'UPDATE_NOTIFICATION'
+    'UPDATE_NOTIFICATION',
+    'CREATE_BLOG'
    );
 
 -- TUTOR PERMISSIONS
@@ -51,5 +51,6 @@ WHERE r.name = 'TUTOR'
     'VIEW_ASSIGNED_STUDENTS',
     'VIEW_ALL_SCHEDULE',
     'VIEW_STUDENT_EMAIL',
-    'SCHEDULE_MEETING'
+    'SCHEDULE_MEETING',
+    'CREATE_BLOG'
   );

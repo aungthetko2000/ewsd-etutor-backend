@@ -1,12 +1,17 @@
 package org.ewsd.controller.blog;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.blog.BlogCreateRequestDto;
 import org.ewsd.dto.blog.BlogResponseDto;
-import org.ewsd.service.blog.BlogService;
+import org.ewsd.dto.response.ApiResponse;
+import org.ewsd.service.blog.BlogServiceImpl;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -15,27 +20,28 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BlogController {
 
-    private final BlogService blogService;
+    private final BlogServiceImpl blogService;
 
-    // 1️⃣ Upload blog
-    @PostMapping
-    @PreAuthorize("hasAuthority('CREATE_BLOG')")
-    public ResponseEntity<String> createBlog(@ModelAttribute BlogCreateRequestDto request) {
-        blogService.createBlog(request);
-        return ResponseEntity.ok("Blog created successfully");
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<BlogResponseDto>> createBlog(@Valid @ModelAttribute BlogCreateRequestDto blogCreateRequestDto, @RequestParam("image") MultipartFile file) {
+        BlogResponseDto newBlog = blogService.createBlog(blogCreateRequestDto, file);
+        ApiResponse<BlogResponseDto> response = ApiResponse.success(newBlog, "Blog created successfully");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    // 2️⃣ Get all blogs
     @GetMapping
     @PreAuthorize("hasAuthority('VIEW_BLOG_LIST')")
-    public List<BlogResponseDto> getBlogs() {
-        return blogService.getAllBlogs();
+    public ResponseEntity<ApiResponse<List<BlogResponseDto>>> getBlogs() {
+        List<BlogResponseDto> list = blogService.getAllBlogs();
+        ApiResponse<List<BlogResponseDto>> response = ApiResponse.success(list, "Get all blogs list");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // 3️⃣ Get blog detail
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('VIEW_BLOG_LIST')")
-    public BlogResponseDto getBlogDetail(@PathVariable Long id) {
-        return blogService.getBlogById(id);
+    public ResponseEntity<ApiResponse<BlogResponseDto>> getBlogDetail(@PathVariable Long id) {
+        BlogResponseDto blogResponseDto = blogService.getBlogById(id);
+        ApiResponse<BlogResponseDto> response = ApiResponse.success(blogResponseDto, "Blog get successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

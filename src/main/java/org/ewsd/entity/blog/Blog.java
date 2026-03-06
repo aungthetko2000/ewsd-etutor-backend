@@ -21,14 +21,15 @@ public class Blog {
 
     private String title;
 
+    @Lob
     @Column(columnDefinition = "TEXT")
-    private String description;
-
-    private String imageUrl;
+    private String content;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private User createdBy;
+    private User user;
 
     private LocalDateTime createdAt;
+
+    private String imageUrl;
 }
