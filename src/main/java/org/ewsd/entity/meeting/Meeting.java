@@ -60,6 +60,7 @@ public class Meeting {
     @Column(name = "description")
     private String description;
 
+    @Enumerated(EnumType.STRING)
     private MeetingStatus status;
 
     private String location;
@@ -70,4 +71,6 @@ public class Meeting {
     @Column(name = "virtual_platform_link")
     private String virtualPlatformLink;
 
+    @Column(name = "reason")
+    private String reason;
 }

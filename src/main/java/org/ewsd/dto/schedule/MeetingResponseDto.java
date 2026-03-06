@@ -27,4 +27,5 @@ public class MeetingResponseDto {
     private String location;
     private String virtualPlatform;
     private String virtualPlatformLink;
+    private String sessionColor;
 }

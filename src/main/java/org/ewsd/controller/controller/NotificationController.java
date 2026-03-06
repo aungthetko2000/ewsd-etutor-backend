@@ -8,6 +8,7 @@ import org.ewsd.service.notification.NotificationService;
 import org.ewsd.util.JwtUtil;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class NotificationController {
     private final JwtUtil jwtUtil;
 
     @GetMapping
+    @PreAuthorize("hasRole('STUDENT') AND hasAuthority('VIEW_NOTIFICATION')")
     public ResponseEntity<ApiResponse<List<NotificationResponseDto>>> getAll(HttpServletRequest request) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
@@ -32,6 +34,7 @@ public class NotificationController {
     }
 
     @PatchMapping("/{id}/handled")
+    @PreAuthorize("hasRole('STUDENT') AND hasAuthority('UPDATE_NOTIFICATION')")
     public void markHandled(@PathVariable Long id) {
         notificationService.markHandled(id);
     }

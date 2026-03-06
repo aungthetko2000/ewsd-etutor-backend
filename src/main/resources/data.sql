@@ -7,7 +7,9 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_ASSIGNED_STUDENTS', 'Can view assigned students', 'ASSIGNED'),
 ('VIEW_ALL_SCHEDULE', 'Can view all schedule', 'SCHEDULE'),
 ('VIEW_STUDENT_EMAIL', 'Can view all student email', 'SCHEDULE'),
-('SCHEDULE_MEETING', 'Can schedule meeting', 'SCHEDULE');
+('SCHEDULE_MEETING', 'Can schedule meeting', 'SCHEDULE'),
+('VIEW_NOTIFICATION', 'Can schedule meeting', 'SCHEDULE'),
+('UPDATE_NOTIFICATION', 'Can schedule meeting', 'SCHEDULE');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
@@ -29,8 +31,10 @@ FROM roles r, permissions p
 WHERE r.name = 'STUDENT'
   AND p.name IN (
     'VIEW_STUDENT_DASHBOARD',
-    'VIEW_BLOG_LIST'
-    );
+    'VIEW_BLOG_LIST',
+    'VIEW_NOTIFICATION',
+    'UPDATE_NOTIFICATION'
+   );
 
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id

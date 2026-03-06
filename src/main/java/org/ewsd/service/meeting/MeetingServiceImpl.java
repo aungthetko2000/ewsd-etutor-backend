@@ -115,6 +115,7 @@ public class MeetingServiceImpl implements MeetingService {
                         .location(meeting.getLocation())
                         .virtualPlatform(meeting.getVirtualPlatform())
                         .virtualPlatformLink(meeting.getVirtualPlatformLink())
+                        .sessionColor(meeting.getSessionColor())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -133,8 +134,12 @@ public class MeetingServiceImpl implements MeetingService {
         if (request.getMeetingStatus() == MeetingStatus.PENDING) {
             return;
         }
-        meeting.setStatus(request.getMeetingStatus() == MeetingStatus.CONFIRMED
-                        ? MeetingStatus.CONFIRMED : MeetingStatus.DECLINED);
+        if (request.getMeetingStatus() == MeetingStatus.CONFIRMED) {
+            meeting.setStatus(MeetingStatus.CONFIRMED);
+        } else {
+            meeting.setReason(request.getReason());
+            meeting.setStatus(MeetingStatus.DECLINED);
+        }
     }
 
 
@@ -147,6 +152,7 @@ public class MeetingServiceImpl implements MeetingService {
 
         return MeetingResponseDto.builder()
                 .id(meeting.getId())
+                .sessionColor(meeting.getSessionColor())
                 .meetingTitle(meeting.getMeetingTitle())
                 .tutorId(meeting.getTutor().getId())
                 .scheduledAt(meeting.getScheduledAt())
