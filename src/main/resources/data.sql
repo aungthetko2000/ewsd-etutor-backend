@@ -5,6 +5,8 @@ INSERT INTO permissions (name, description, category) VALUES
 ('BULK_ALLOCATION', 'Can allocate bulk', 'ALLOCATE'),
 ('VIEW_BLOG_LIST', 'Can allocate bulk', 'ALLOCATE'),
 ('VIEW_ASSIGNED_STUDENTS', 'Can view assigned students', 'ASSIGNED'),
+('CREATE_BLOG', 'Can create blog', 'BLOG'),
+('VIEW_ASSIGNED_STUDENTS', 'Can view assigned students', 'ASSIGNED'),
 ('VIEW_ALL_SCHEDULE', 'Can view all schedule', 'SCHEDULE'),
 ('VIEW_STUDENT_EMAIL', 'Can view all student email', 'SCHEDULE'),
 ('SCHEDULE_MEETING', 'Can schedule meeting', 'SCHEDULE'),
@@ -16,15 +18,17 @@ INSERT INTO roles (name, description) VALUES
 ('TUTOR', 'Tutor role'),
 ('STAFF', 'Staff/Admin role');
 
+-- STAFF PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r, permissions p
 WHERE r.name = 'STAFF'
-   AND p.name IN (
+  AND p.name IN (
     'VIEW_STAFF_DASHBOARD',
     'BULK_ALLOCATION'
   );
 
+-- STUDENT PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r, permissions p
@@ -36,6 +40,7 @@ WHERE r.name = 'STUDENT'
     'UPDATE_NOTIFICATION'
    );
 
+-- TUTOR PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r, permissions p
