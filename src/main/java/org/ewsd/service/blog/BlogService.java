@@ -14,4 +14,8 @@ public interface BlogService {
 
     BlogResponseDto getBlogById(Long id);
 
+    int toggleFavorite(String userEmail, Long blogId);
+
+    List<BlogResponseDto> getMostFavoriteBlog();
+
 }

@@ -9,4 +9,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long> {
 
     List<Blog> findAllByOrderByCreatedAtDesc();
 
+    List<Blog> findTop6ByOrderByFavoriteCountDesc();
+
 }

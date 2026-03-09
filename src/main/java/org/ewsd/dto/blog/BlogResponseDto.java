@@ -15,5 +15,7 @@ public class BlogResponseDto {
     private String authorName;
     private LocalDateTime createdAt;
     private String email;
-
+    private String imageUrl;
+    private int favoriteCount;
+    private boolean likedByCurrentUser;
 }

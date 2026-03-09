@@ -53,6 +53,12 @@ public class User implements UserDetails {
 
     private LocalDateTime updatedAt;
 
+    @Column(name = "last_login_time")
+    private LocalDateTime lastLoginTime;
+
+    @Column(name = "previous_login_time")
+    private LocalDateTime previousLoginTime;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

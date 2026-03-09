@@ -32,4 +32,9 @@ public class Blog {
     private LocalDateTime createdAt;
 
     private String imageUrl;
+
+    @JoinColumn(name = "favorite_count")
+    private int favoriteCount;
+
+    private boolean likedByCurrentUser;
 }
