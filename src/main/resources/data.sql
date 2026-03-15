@@ -11,7 +11,8 @@ INSERT INTO permissions (name, description, category) VALUES
 ('SCHEDULE_MEETING', 'Can schedule meeting', 'SCHEDULE'),
 ('VIEW_NOTIFICATION', 'Can schedule meeting', 'NOTIFICATION'),
 ('UPDATE_NOTIFICATION', 'Can schedule meeting', 'NOTIFICATION'),
-('LIKE_BLOG_POST', 'Can like blog', 'BLOG');
+('LIKE_BLOG_POST', 'Can like blog', 'BLOG'),
+('POST_COMMENT', 'Can post a comment on blogs', 'BLOG');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
@@ -40,6 +41,7 @@ WHERE r.name = 'STUDENT'
     'UPDATE_NOTIFICATION',
     'CREATE_BLOG',
     'LIKE_BLOG_POST'
+    'POST_COMMENT'
    );
 
 -- TUTOR PERMISSIONS
@@ -56,4 +58,5 @@ WHERE r.name = 'TUTOR'
     'SCHEDULE_MEETING',
     'CREATE_BLOG',
     'LIKE_BLOG_POST'
+    'POST_COMMENT'
   );
