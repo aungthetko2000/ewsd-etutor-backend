@@ -26,7 +26,7 @@ public class ChatMessageResponse {
         ChatMessageResponse res = new ChatMessageResponse();
         res.id         = msg.getId();
         res.senderId   = msg.getSender().getId();
-        res.senderName = msg.getSender().getFirstName() + msg.getSender().getLastName();
+        res.senderName = msg.getSender().getFirstName() + " " + msg.getSender().getLastName();
         res.receiverId = msg.getReceiver().getId();
         res.content    = msg.getContent();
         res.timestamp  = msg.getTimestamp();

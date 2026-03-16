@@ -25,4 +25,10 @@ public  interface StudentRepository extends JpaRepository<Student, Long> {
     """)
     List<String> findStudentEmailsByTutorAndEmailLike(@Param("userId") Long userId, @Param("email") String email);
 
+    @Query("""
+        select s
+        from Student s
+        where lower(s.fullName) like lower(concat('%', :name, '%'))
+    """)
+    List<Student> findAllByStudentName(@Param("name") String name);
 }

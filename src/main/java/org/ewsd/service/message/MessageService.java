@@ -1,7 +1,9 @@
 package org.ewsd.service.message;
 
+import org.ewsd.dto.message.ChatContactResponse;
 import org.ewsd.dto.message.ChatMessageRequest;
 import org.ewsd.dto.message.ChatMessageResponse;
+import org.ewsd.dto.student.StudentResponseDto;
 import org.ewsd.entity.user.User;
 
 import java.util.List;
@@ -16,6 +18,8 @@ public interface MessageService {
 
     long countUnread(Long receiverId, Long senderId);
 
-    List<User> getChatContacts(Long userId);
+    List<ChatContactResponse> getChatContacts(Long userId);
+
+    List<StudentResponseDto> getAllStudents(String name);
 
 }

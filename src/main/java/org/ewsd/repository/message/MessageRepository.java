@@ -41,12 +41,20 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
                             @Param("senderId") Long senderId);
 
     @Query("""
-        SELECT DISTINCT
-            CASE WHEN m.sender.id = :userId THEN m.receiver
-                 ELSE m.sender END
+        SELECT m
         FROM Message m
-        WHERE m.sender.id = :userId OR m.receiver.id = :userId
+        WHERE m.id IN (
+            SELECT MAX(m2.id)
+            FROM Message m2
+            WHERE m2.sender.id = :userId OR m2.receiver.id = :userId
+            GROUP BY
+                CASE
+                    WHEN m2.sender.id = :userId THEN m2.receiver.id
+                    ELSE m2.sender.id
+                END
+        )
+        ORDER BY m.timestamp DESC
     """)
-    List<User> findChatContacts(@Param("userId") Long userId);
+    List<Message> findLatestConversations(@Param("userId") Long userId);
 
 }

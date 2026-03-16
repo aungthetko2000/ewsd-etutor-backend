@@ -1,11 +1,15 @@
 package org.ewsd.service.message;
 
 import lombok.RequiredArgsConstructor;
+import org.ewsd.dto.message.ChatContactResponse;
 import org.ewsd.dto.message.ChatMessageRequest;
 import org.ewsd.dto.message.ChatMessageResponse;
+import org.ewsd.dto.student.StudentResponseDto;
 import org.ewsd.entity.message.Message;
+import org.ewsd.entity.student.Student;
 import org.ewsd.entity.user.User;
 import org.ewsd.repository.message.MessageRepository;
+import org.ewsd.repository.student.StudentRepository;
 import org.ewsd.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +23,7 @@ public class MessageServiceImpl implements MessageService {
 
     private final UserRepository userRepository;
     private final MessageRepository messageRepository;
+    private final StudentRepository studentRepository;
 
     @Override
     @Transactional
@@ -63,7 +68,29 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> getChatContacts(Long userId) {
-        return messageRepository.findChatContacts(userId);
+    public List<ChatContactResponse> getChatContacts(Long userId) {
+        return messageRepository.findLatestConversations(userId)
+                .stream()
+                .map(msg -> ChatContactResponse.from(msg, userId))
+                .toList();
+    }
+
+    @Override
+    public List<StudentResponseDto> getAllStudents(String name) {
+        return studentRepository.findAllByStudentName(name)
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    private StudentResponseDto mapToDto(Student student) {
+        return StudentResponseDto.builder()
+                .id(student.getId())
+                .fullName(student.getFullName())
+                .email(student.getUser().getEmail())
+                .avatarUrl(student.getAvatarUrl())
+                .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
+                .assigned(student.getTutor() != null)
+                .build();
     }
 }
