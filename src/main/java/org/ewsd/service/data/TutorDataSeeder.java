@@ -8,6 +8,7 @@ import org.ewsd.repository.role.RoleRepository;
 import org.ewsd.repository.tutor.TutorRepository;
 import org.ewsd.repository.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.IntStream;
 
+@Order(1) //test assigned students
 @Service
 @RequiredArgsConstructor
 public class TutorDataSeeder implements CommandLineRunner {

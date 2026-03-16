@@ -41,9 +41,10 @@ public class StudentService {
         return StudentResponseDto.builder()
                 .id(student.getId())
                 .fullName(student.getFullName())
-                .avatarUrl(student.getAvatarUrl())
                 .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
                 .assigned(student.getTutor() != null)
+                .age(student.getAge())       // NEW
+                .grade(student.getGrade())   // NEW
                 .build();
     }
 

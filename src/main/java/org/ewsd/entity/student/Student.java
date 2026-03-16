@@ -19,15 +19,15 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+    private Long id;
     private String fullName;
+    private Integer age;
+    private String grade;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
-
-    private String avatarUrl;
 
     @ManyToOne
     @JoinColumn(name = "tutor_id")

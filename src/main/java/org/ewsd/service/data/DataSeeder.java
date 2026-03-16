@@ -12,6 +12,7 @@ import org.ewsd.repository.student.StudentRepository;
 import org.ewsd.repository.tutor.TutorRepository;
 import org.ewsd.repository.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Order(2) //test assigned students
 @Service
 @RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {
@@ -92,14 +94,20 @@ public class DataSeeder implements CommandLineRunner {
 
         List<User> savedUser = userRepository.saveAll(userLists);
 
+        //test assigned student
+        List<Tutor> tutors = tutorRepository.findAll();
+        Tutor firstTutor = tutors.get(0); // take first tutor
+
         List<Student> studentList = savedUser.stream().map(
                 user -> Student.builder()
                         .fullName(user.getFirstName() + " " + user.getLastName())
-                        .user(user).build()).toList();
+                        .age(16)                 // example age
+                        .grade("Grade 10")       // example grade
+                        .user(user)
+                        .tutor(firstTutor)   // assign tutor
+                        .build()
+        ).toList();
 
         studentRepository.saveAll(studentList);
-
-
     }
-
 }
