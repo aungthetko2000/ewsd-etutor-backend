@@ -17,12 +17,11 @@ spring:
   application:
     name: ewsd-etutor-backend
 
-
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: JDBC:mysql://localhost:3306/ewsd_local
     username: root
-    password:
+    password: letmein
 
   jpa:
     defer-datasource-initialization: true
@@ -53,4 +52,3 @@ server:
   port: 8080
   error:
     include-message: always
-

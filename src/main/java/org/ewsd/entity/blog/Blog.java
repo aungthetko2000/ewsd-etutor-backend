@@ -2,9 +2,12 @@ package org.ewsd.entity.blog;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.ewsd.entity.comment.Comment;
 import org.ewsd.entity.user.User;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "blogs")
@@ -37,4 +40,7 @@ public class Blog {
     private int favoriteCount;
 
     private boolean likedByCurrentUser;
+
+    @OneToMany(mappedBy = "blog", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 }
