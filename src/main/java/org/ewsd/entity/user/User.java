@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ewsd.entity.blog.Blog;
+import org.ewsd.entity.comment.Comment;
 import org.ewsd.entity.permission.Permission;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.staff.Staff;
@@ -82,6 +83,9 @@ public class User implements UserDetails {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Blog> blogs;
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments;
 
     @PrePersist
     protected void onCreate() {

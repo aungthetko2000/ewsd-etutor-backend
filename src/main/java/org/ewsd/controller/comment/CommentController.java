@@ -2,6 +2,7 @@ package org.ewsd.controller.comment;
 
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.comment.CommentRequestDTO;
+import org.ewsd.dto.comment.CommentResponseDto;
 import org.ewsd.dto.response.ApiResponse;
 import org.ewsd.entity.comment.Comment;
 import org.ewsd.service.comment.CommentService;
@@ -20,17 +21,18 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    @PreAuthorize("hasRole('STUDENT') AND hasAuthority('POST_COMMENT')")
-    public ResponseEntity<ApiResponse<Comment>> createComment(@RequestBody CommentRequestDTO dto) {
-        Comment newComment = commentService.saveComment(dto);
-        ApiResponse<Comment> response = ApiResponse.success(newComment, "Comment posted successfully");
+    @PreAuthorize("(hasRole('STUDENT') OR hasRole('TUTOR')) AND hasAuthority('POST_COMMENT')")
+    public ResponseEntity<ApiResponse<CommentResponseDto>> createComment(@RequestBody CommentRequestDTO dto) {
+        CommentResponseDto newComment = commentService.saveComment(dto);
+        ApiResponse<CommentResponseDto> response = ApiResponse.success(newComment, "Comment posted successfully");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/blog/{blogId}")
-    @PreAuthorize("hasRole('STUDENT') AND hasAuthority('VIEW_ALL_COMMENT')")
-    public ResponseEntity<ApiResponse<List<Comment>>> getComments(@PathVariable Long blogId) {
-        List<Comment> list = commentService.getCommentsByBlog(blogId);
-        return ResponseEntity.ok(ApiResponse.success(list, "Retrieved successfully"));
+    @GetMapping("/{blogId}")
+    @PreAuthorize("(hasRole('STUDENT') OR hasRole('TUTOR')) AND hasAuthority('VIEW_ALL_COMMENT')")
+    public ResponseEntity<ApiResponse<List<CommentResponseDto>>> getComments(@PathVariable Long blogId) {
+        List<CommentResponseDto> list = commentService.getCommentsByBlog(blogId);
+        ApiResponse<List<CommentResponseDto>> response = ApiResponse.success(list, "Get all comments by blog");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
