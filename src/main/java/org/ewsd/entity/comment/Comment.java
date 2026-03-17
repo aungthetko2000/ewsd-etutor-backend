@@ -18,7 +18,7 @@ public class Comment {
     private Long id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String content;
+    private String description;
 
     @Column(nullable = false)
     private Long authorId;

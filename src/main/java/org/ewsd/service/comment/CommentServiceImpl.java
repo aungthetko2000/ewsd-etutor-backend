@@ -25,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new RuntimeException("Blog not found"));
 
         Comment comment = Comment.builder()
-                .content(dto.getContent())
+                .description(dto.getDescription())
                 .authorId(dto.getAuthorId())
                 .blog(blog)
                 .build();

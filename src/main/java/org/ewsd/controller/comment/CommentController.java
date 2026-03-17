@@ -20,15 +20,15 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping
-    @PreAuthorize("hasAuthority('POST_COMMENT')")
+    @PreAuthorize("hasRole('STUDENT') AND hasAuthority('POST_COMMENT')")
     public ResponseEntity<ApiResponse<Comment>> createComment(@RequestBody CommentRequestDTO dto) {
         Comment newComment = commentService.saveComment(dto);
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponse.success(newComment, "Comment posted successfully"));
+        ApiResponse<Comment> response = ApiResponse.success(newComment, "Comment posted successfully");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/blog/{blogId}")
-    @PreAuthorize("hasAuthority('VIEW_BLOG_LIST')")
+    @PreAuthorize("hasRole('STUDENT') AND hasAuthority('VIEW_ALL_COMMENT')")
     public ResponseEntity<ApiResponse<List<Comment>>> getComments(@PathVariable Long blogId) {
         List<Comment> list = commentService.getCommentsByBlog(blogId);
         return ResponseEntity.ok(ApiResponse.success(list, "Retrieved successfully"));

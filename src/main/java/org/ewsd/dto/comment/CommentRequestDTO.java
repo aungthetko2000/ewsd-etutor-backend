@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CommentRequestDTO {
-    private String content;
+
+    private String description;
     private Long authorId;
     private Long blogId;
+
 }
