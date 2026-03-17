@@ -12,9 +12,11 @@ INSERT INTO permissions (name, description, category) VALUES
 ('SCHEDULE_MEETING', 'Can schedule meeting', 'SCHEDULE'),
 ('VIEW_NOTIFICATION', 'Can schedule meeting', 'NOTIFICATION'),
 ('UPDATE_NOTIFICATION', 'Can schedule meeting', 'NOTIFICATION'),
-('LIKE_BLOG_POST', 'Can like blog', 'BLOG'),
 ('GET_CHAT_CONTACTS', 'Can get chat contact', 'CHAT'),
 ('GET_CHAT_HISTORY', 'Can get chat history', 'CHAT');
+('LIKE_BLOG_POST', 'Can like blog', 'BLOG'),
+('POST_COMMENT', 'Can post a comment on blogs', 'COMMENT'),
+('VIEW_ALL_COMMENT', 'Can see a comment on blogs', 'COMMENT');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
@@ -46,6 +48,9 @@ WHERE r.name = 'STUDENT'
     'VIEW_ALL_STUDENTS',
     'GET_CHAT_CONTACTS',
     'GET_CHAT_HISTORY'
+    'LIKE_BLOG_POST',
+    'POST_COMMENT',
+    'VIEW_ALL_COMMENT'
    );
 
 -- TUTOR PERMISSIONS
@@ -64,4 +69,7 @@ WHERE r.name = 'TUTOR'
     'LIKE_BLOG_POST',
     'GET_CHAT_CONTACTS',
     'GET_CHAT_HISTORY'
+    'LIKE_BLOG_POST'
+    'POST_COMMENT',
+    'VIEW_ALL_COMMENT'
   );
