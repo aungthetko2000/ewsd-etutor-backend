@@ -1,12 +1,20 @@
 package org.ewsd.service.student;
 
 import lombok.RequiredArgsConstructor;
+import org.ewsd.dto.student.StudentRegisterRequest;
 import org.ewsd.dto.student.StudentResponseDto;
+import org.ewsd.entity.role.Role;
 import org.ewsd.entity.student.Student;
+import org.ewsd.entity.user.User;
+import org.ewsd.repository.role.RoleRepository;
 import org.ewsd.repository.student.StudentRepository;
+import org.ewsd.repository.user.UserRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +54,42 @@ public class StudentService {
                 .age(student.getAge())       // NEW
                 .grade(student.getGrade())   // NEW
                 .build();
+    }
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public StudentResponseDto registerStudent(StudentRegisterRequest request) {
+
+        Role studentRole = roleRepository.findByName("STUDENT")
+                .orElseThrow(() -> new RuntimeException("Student role not found"));
+
+        User user = User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .enabled(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .roles(Set.of(studentRole))
+                .customPermissions(new HashSet<>())
+                .build();
+
+        user = userRepository.save(user);
+
+        Student student = Student.builder()
+                .fullName(request.getFirstName() + " " + request.getLastName())
+                .age(request.getAge())
+                .grade(request.getGrade())
+                .user(user)
+                .build();
+
+        studentRepository.save(student);
+
+        return mapToDto(student);
     }
 
 }
