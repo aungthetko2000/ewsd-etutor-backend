@@ -14,6 +14,7 @@ import org.ewsd.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ public class MessageServiceImpl implements MessageService {
                 .content(request.getContent())
                 .sender(sender)
                 .receiver(receiver)
+                .timestamp(LocalDateTime.now())
                 .isRead(false)
                 .build();
 
