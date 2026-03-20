@@ -12,6 +12,7 @@ import org.ewsd.repository.student.StudentRepository;
 import org.ewsd.repository.tutor.TutorRepository;
 import org.ewsd.repository.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Order(2) //test assigned students
 @Service
 @RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {
@@ -39,26 +41,6 @@ public class DataSeeder implements CommandLineRunner {
         Role studentRole = roleRepository.findByName("STUDENT")
                 .orElseThrow(()->new RuntimeException("Student role not found"));
 
-
-        User staffUser = User.builder()
-                .email("staff@example.com")
-                .password(passwordEncoder.encode("password123"))
-                .firstName("John")
-                .lastName("Staff")
-                .accountNonLocked(true)
-                .enabled(true)
-                .accountNonExpired(true)
-                .credentialsNonExpired(true)
-                .roles(Set.of(staffRole))
-                .customPermissions(new HashSet<>())
-                .build();
-
-        staffUser = userRepository.save(staffUser);
-        Staff staff = Staff.builder()
-                .fullName(staffUser.getFirstName() + staffUser.getLastName())
-                .user(staffUser)
-                .build();
-        staffRepository.save(staff);
 
         List<User> userLists = List.of(
                 new User(null, "mgmg@example.com", passwordEncoder.encode("password")
@@ -92,14 +74,41 @@ public class DataSeeder implements CommandLineRunner {
 
         List<User> savedUser = userRepository.saveAll(userLists);
 
+//test assigned student
+        List<Tutor> tutors = tutorRepository.findAll();
+        Tutor firstTutor = tutors.get(0); // take first tutor
+
         List<Student> studentList = savedUser.stream().map(
                 user -> Student.builder()
                         .fullName(user.getFirstName() + " " + user.getLastName())
-                        .user(user).build()).toList();
+                        .age(16)                 // example age
+                        .grade("Grade 10")       // example grade
+                        .user(user)
+                        .tutor(firstTutor)   // assign tutor
+                        .build()
+        ).toList();
 
         studentRepository.saveAll(studentList);
 
+        User staffUser = User.builder()
+                .email("staff@example.com")
+                .password(passwordEncoder.encode("password123"))
+                .firstName("John")
+                .lastName("Staff")
+                .accountNonLocked(true)
+                .enabled(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .roles(Set.of(staffRole))
+                .customPermissions(new HashSet<>())
+                .build();
 
+        staffUser = userRepository.save(staffUser);
+        Staff staff = Staff.builder()
+                .fullName(staffUser.getFirstName() + staffUser.getLastName())
+                .user(staffUser)
+                .build();
+        staffRepository.save(staff);
     }
 
 }
