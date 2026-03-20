@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ewsd.entity.blog.Blog;
+import org.ewsd.entity.comment.Comment;
 import org.ewsd.entity.permission.Permission;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.staff.Staff;
@@ -16,10 +18,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -40,7 +39,10 @@ public class User implements UserDetails {
     private String password;
 
     @Column(nullable = false)
-    private String fullName;
+    private String firstName;
+
+    @Column(nullable = false)
+    private String lastName;
 
     private boolean enabled = true;
     private boolean accountNonExpired = true;
@@ -51,6 +53,12 @@ public class User implements UserDetails {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @Column(name = "last_login_time")
+    private LocalDateTime lastLoginTime;
+
+    @Column(name = "previous_login_time")
+    private LocalDateTime previousLoginTime;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
@@ -67,8 +75,17 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Staff staff;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Student student;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Tutor tutor;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Blog> blogs;
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments;
 
     @PrePersist
     protected void onCreate() {
@@ -103,9 +120,12 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getAllPermissions().stream()
-                .map(permission -> new SimpleGrantedAuthority(permission.getName()))
-                .collect(Collectors.toList());
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        getRoles().forEach(role ->
+                authorities.add(new SimpleGrantedAuthority("ROLE_" + role.getName())));
+        getAllPermissions().forEach(permission ->
+                authorities.add(new SimpleGrantedAuthority(permission.getName())));
+        return authorities;
     }
 
     @Override

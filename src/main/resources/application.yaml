@@ -1,4 +1,19 @@
+app:
+  upload:
+    dir: ${user.home}/Documents/blogs
+
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: chanmyae.huawei@gmail.com
+    password: hjgt sjbp kxqh ztoj
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   application:
     name: ewsd-etutor-backend
 

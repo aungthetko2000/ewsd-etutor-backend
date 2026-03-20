@@ -12,12 +12,16 @@ import org.ewsd.repository.student.StudentRepository;
 import org.ewsd.repository.tutor.TutorRepository;
 import org.ewsd.repository.user.UserRepository;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+@Order(2) //test assigned students
 @Service
 @RequiredArgsConstructor
 public class DataSeeder implements CommandLineRunner {
@@ -34,16 +38,62 @@ public class DataSeeder implements CommandLineRunner {
         Role staffRole = roleRepository.findByName("STAFF")
                 .orElseThrow(() -> new RuntimeException("STUDENT role not found! Run data.sql first."));
 
-        Role tutorRole = roleRepository.findByName("TUTOR")
-                .orElseThrow(() -> new RuntimeException("STUDENT role not found! Run data.sql first."));
-
         Role studentRole = roleRepository.findByName("STUDENT")
                 .orElseThrow(()->new RuntimeException("Student role not found"));
+
+
+        List<User> userLists = List.of(
+                new User(null, "mgmg@example.com", passwordEncoder.encode("password")
+                , "Mg", "Mg", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
+                        new HashSet<>(), null, null, null, null, null),
+                new User(null, "aungaung@example.com", passwordEncoder.encode("password"),
+                        "Aung", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
+                        , new HashSet<>(), null, null, null, null, null),
+                new User(null, "kyaw@example.com", passwordEncoder.encode("password")
+                        , "Kyaw", "Kyaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
+                        new HashSet<>(), null, null, null, null, null),
+                new User(null, "hla@example.com", passwordEncoder.encode("password"),
+                        "Hla", "Hla", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), null, null, Set.of(studentRole)
+                        , new HashSet<>(), null, null, null, null, null),
+                new User(null, "su@example.com", passwordEncoder.encode("password"),
+                "Su", "Su", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
+                        , new HashSet<>(), null, null, null, null, null),
+                new User(null, "moe@example.com", passwordEncoder.encode("password"),
+                "Moe", "Moe", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
+                        , new HashSet<>(), null, null, null, null, null),
+                new User(null, "zaw@example.com", passwordEncoder.encode("password"),
+                        "Zaw", "Zaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
+                        , new HashSet<>(), null, null, null, null, null),
+                new User(null, "ko@example.com", passwordEncoder.encode("password"),
+                        "Ko", "Ko", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null,null, Set.of(studentRole)
+                        , new HashSet<>(), null, null, null, null, null),
+                new User(null, "myoaung@example.com", passwordEncoder.encode("password"),
+                        "Myo", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
+                        , new HashSet<>(), null, null, null, null, null)
+        );
+
+        List<User> savedUser = userRepository.saveAll(userLists);
+
+        List<Tutor> tutors = tutorRepository.findAll();
+        Tutor firstTutor = tutors.get(0);
+
+        List<Student> studentList = savedUser.stream().map(
+                user -> Student.builder()
+                        .fullName(user.getFirstName() + " " + user.getLastName())
+                        .age(16)
+                        .grade("Grade 10")
+                        .user(user)
+                        .tutor(firstTutor)
+                        .build()
+        ).toList();
+
+        studentRepository.saveAll(studentList);
 
         User staffUser = User.builder()
                 .email("staff@example.com")
                 .password(passwordEncoder.encode("password123"))
-                .fullName("John Staff")
+                .firstName("John")
+                .lastName("Staff")
                 .accountNonLocked(true)
                 .enabled(true)
                 .accountNonExpired(true)
@@ -54,51 +104,10 @@ public class DataSeeder implements CommandLineRunner {
 
         staffUser = userRepository.save(staffUser);
         Staff staff = Staff.builder()
-                .fullName("John Smith")
+                .fullName(staffUser.getFirstName() + staffUser.getLastName())
                 .user(staffUser)
                 .build();
         staffRepository.save(staff);
-
-
-        User studentUser = User.builder()
-                .email("student@example.com")
-                .password(passwordEncoder.encode("password123"))
-                .fullName("Student1")
-                .accountNonLocked(true)
-                .enabled(true)
-                .accountNonExpired(true)
-                .credentialsNonExpired(true)
-                .roles(Set.of(studentRole))
-                .customPermissions(new HashSet<>())
-                .build();
-        studentUser = userRepository.save(studentUser);
-        Student student = Student
-                .builder()
-                .fullName("Alice Student")
-                .user(studentUser)
-                .build();
-        studentRepository.save(student);
-
-        User tutorUser = User.builder()
-                .email("tutor@example.com")
-                .password(passwordEncoder.encode("password123"))
-                .fullName("Daniel Tutor")
-                .accountNonLocked(true)
-                .enabled(true)
-                .accountNonExpired(true)
-                .credentialsNonExpired(true)
-                .roles(Set.of(tutorRole))
-                .customPermissions(new HashSet<>())
-                .build();
-
-        tutorUser = userRepository.save(tutorUser);
-
-        Tutor tutor = Tutor.builder()
-                .fullName("Astro Smith")
-                .user(tutorUser)
-                .build();
-        tutorRepository.save(tutor);
-
     }
 
 }

@@ -5,7 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ewsd.entity.meeting.Meeting;
+import org.ewsd.entity.student.Student;
 import org.ewsd.entity.user.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "tutors")
@@ -19,8 +24,17 @@ public class Tutor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fullName;
+    private String expertise;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)
     private User user;
+
+    @OneToMany(mappedBy = "tutor")
+    private List<Student> assignedStudents = new ArrayList<>();
+
+    @OneToMany(mappedBy = "tutor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Meeting> meetings = new ArrayList<>();
+
+
 }

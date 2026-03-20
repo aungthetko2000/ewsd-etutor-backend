@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.ewsd.entity.user.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -34,11 +35,13 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateAccessToken(UserDetails userDetails, List<String> permissions, List<String> roles) {
+    public String generateAccessToken(User user, UserDetails userDetails, List<String> permissions, List<String> roles) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("permissions", permissions);
         claims.put("role", roles);
         claims.put("email", userDetails.getUsername());
+        claims.put("authorId", getUserId(user, roles));
+        claims.put("authorType", getUserType(roles));
         return createToken(claims, userDetails.getUsername(), expiration);
     }
 
@@ -65,18 +68,28 @@ public class JwtUtil {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public List<String > extractPermissions(String token) {
+    public List<String> extractPermissions(String token) {
         Claims claims = extractAllClaims(token);
         return (List<String>) claims.get("permissions");
     }
 
-    public List<String > extractRoles(String token) {
+    public List<String> extractRoles(String token) {
         Claims claims = extractAllClaims(token);
         return (List<String>) claims.get("roles");
     }
 
+    public String extractEmail(String token) {
+        Claims claims = extractAllClaims(token);
+        return (String) claims.get("email");
+    }
+
+    public Long extractUserId(String token) {
+        Claims claims = extractAllClaims(token);
+        return (Long) claims.get("authorId");
+    }
+
     public Date extractExpiration(String token) {
-        return  extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, Claims::getExpiration);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -104,4 +117,25 @@ public class JwtUtil {
     public Long getExpirationTimeInSecond() {
         return expiration / 1000;
     }
+
+    private Long getUserId(User user, List<String> roles) {
+        if (roles.contains("STUDENT")) {
+            return user.getStudent().getUser().getId();
+        }
+        if (roles.contains("TUTOR")) {
+            return user.getTutor().getId();
+        }
+        return null;
+    }
+
+    private String getUserType(List<String> roles) {
+        if (roles.contains("STUDENT")) {
+            return "STUDENT";
+        }
+        if (roles.contains("TUTOR")) {
+            return "TUTOR";
+        }
+        return null;
+    }
 }
+
