@@ -90,7 +90,6 @@ public class MessageServiceImpl implements MessageService {
                 .id(student.getId())
                 .fullName(student.getFullName())
                 .email(student.getUser().getEmail())
-                .avatarUrl(student.getAvatarUrl())
                 .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
                 .assigned(student.getTutor() != null)
                 .build();
