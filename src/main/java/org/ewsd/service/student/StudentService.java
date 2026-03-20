@@ -22,6 +22,9 @@ import java.util.stream.Collectors;
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<StudentResponseDto> getStudents(Boolean unassignedOnly) {
 
@@ -56,10 +59,6 @@ public class StudentService {
                 .grade(student.getGrade())   // NEW
                 .build();
     }
-
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public StudentResponseDto registerStudent(StudentRegisterRequest request) {
 
