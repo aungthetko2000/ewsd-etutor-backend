@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -98,15 +99,22 @@ public class DataSeeder implements CommandLineRunner {
         List<Tutor> tutors = tutorRepository.findAll();
         Tutor firstTutor = tutors.get(0); // take first tutor
 
-        List<Student> studentList = savedUser.stream().map(
-                user -> Student.builder()
-                        .fullName(user.getFirstName() + " " + user.getLastName())
-                        .age(16)                 // example age
-                        .grade("Grade 10")       // example grade
-                        .user(user)
-                        .tutor(firstTutor)   // assign tutor
-                        .build()
-        ).toList();
+        List<Student> studentList = new ArrayList<>();
+
+//        ko zayar test
+        for (int i = 0; i < savedUser.size(); i++) {
+            User user = savedUser.get(i);
+
+            Student student = Student.builder()
+                    .fullName(user.getFirstName() + " " + user.getLastName())
+                    .age(16)
+                    .grade("Grade 10")
+                    .user(user)
+                    .tutor(i == 0 ? null : firstTutor) // ✅ first student unassigned
+                    .build();
+
+            studentList.add(student);
+        }
 
         studentRepository.saveAll(studentList);
     }
