@@ -21,7 +21,7 @@ spring:
     driverClassName: com.mysql.cj.jdbc.Driver
     url: JDBC:mysql://localhost:3306/ewsd_local
     username: root
-    password: letmein
+    password: Htut2003@@@
 
   jpa:
     defer-datasource-initialization: true

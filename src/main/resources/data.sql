@@ -18,7 +18,8 @@ INSERT INTO permissions (name, description, category) VALUES
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
 ('TUTOR', 'Tutor role'),
-('STAFF', 'Staff/Admin role');
+('STAFF', 'Staff/Admin role'),
+('ADMIN', 'System Administrator role');
 
 -- STAFF PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
@@ -63,3 +64,10 @@ WHERE r.name = 'TUTOR'
     'POST_COMMENT',
     'VIEW_ALL_COMMENT'
   );
+
+-- ADMIN PERMISSIONS
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT r.id, p.id
+FROM roles r, permissions p
+WHERE r.name = 'ADMIN'
+  AND p.name IN ('VIEW_ANALYTICS');
