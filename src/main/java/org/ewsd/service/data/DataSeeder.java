@@ -101,7 +101,6 @@ public class DataSeeder implements CommandLineRunner {
 
         List<Student> studentList = new ArrayList<>();
 
-//        ko zayar test
         for (int i = 0; i < savedUser.size(); i++) {
             User user = savedUser.get(i);
 
