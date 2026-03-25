@@ -26,8 +26,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
           AND m.sender.id = :senderId
           AND m.isRead = false
     """)
-    long countUnreadMessages(@Param("receiverId") Long receiverId,
-                             @Param("senderId") Long senderId);
+    long countUnreadMessages(Long receiverId, Long senderId);
 
     @Modifying
     @Query("""

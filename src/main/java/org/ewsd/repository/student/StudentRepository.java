@@ -1,6 +1,7 @@
 package org.ewsd.repository.student;
 
 import org.ewsd.entity.student.Student;
+import org.ewsd.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,10 +26,4 @@ public  interface StudentRepository extends JpaRepository<Student, Long> {
     """)
     List<String> findStudentEmailsByTutorAndEmailLike(@Param("userId") Long userId, @Param("email") String email);
 
-    @Query("""
-        select s
-        from Student s
-        where lower(s.fullName) like lower(concat('%', :name, '%'))
-    """)
-    List<Student> findAllByStudentName(@Param("name") String name);
 }

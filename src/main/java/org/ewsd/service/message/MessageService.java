@@ -4,6 +4,7 @@ import org.ewsd.dto.message.ChatContactResponse;
 import org.ewsd.dto.message.ChatMessageRequest;
 import org.ewsd.dto.message.ChatMessageResponse;
 import org.ewsd.dto.student.StudentResponseDto;
+import org.ewsd.dto.user.UserResponseDto;
 import org.ewsd.entity.user.User;
 
 import java.util.List;
@@ -20,6 +21,6 @@ public interface MessageService {
 
     List<ChatContactResponse> getChatContacts(Long userId);
 
-    List<StudentResponseDto> getAllStudents(String name);
+    List<UserResponseDto> getAllUsers(String name);
 
 }
