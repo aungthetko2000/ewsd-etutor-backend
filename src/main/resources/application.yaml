@@ -1,10 +1,23 @@
 app:
   upload:
-    dir: C:\etutor_document_uploads
+    dir: ${user.home}/Documents/blogs
 
 spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: chanmyae.huawei@gmail.com
+    password: hjgt sjbp kxqh ztoj
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
   application:
     name: ewsd-etutor-backend
+
   servlet:
     multipart:
       max-file-size: 25MB
@@ -12,9 +25,9 @@ spring:
 
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ewsd_local
+    url: JDBC:mysql://localhost:3306/ewsd_local
     username: root
-    password: Htut2003@@@
+    password:
 
   jpa:
     defer-datasource-initialization: true

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ewsd.entity.blog.Blog;
+import org.ewsd.entity.comment.Comment;
 import org.ewsd.entity.permission.Permission;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.staff.Staff;
@@ -52,6 +54,12 @@ public class User implements UserDetails {
 
     private LocalDateTime updatedAt;
 
+    @Column(name = "last_login_time")
+    private LocalDateTime lastLoginTime;
+
+    @Column(name = "previous_login_time")
+    private LocalDateTime previousLoginTime;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -67,11 +75,17 @@ public class User implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Staff staff;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Student student;
 
-    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Tutor tutor;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Blog> blogs;
+
+    @OneToMany(mappedBy = "user")
+    private List<Comment> comments;
 
     @PrePersist
     protected void onCreate() {

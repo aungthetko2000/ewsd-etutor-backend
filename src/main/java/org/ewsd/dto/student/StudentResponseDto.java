@@ -10,8 +10,10 @@ public class StudentResponseDto {
 
     private Long id;
     private String fullName;
-    private String avatarUrl;
     private Long currentTutorId;
     private boolean assigned;
+    private String email;
 
+    private Integer age;
+    private String grade;
 }
