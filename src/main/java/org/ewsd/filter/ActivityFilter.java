@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.entity.activity.UserActivity;
 import org.ewsd.repository.activity.UserActivityRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
@@ -22,36 +23,43 @@ public class ActivityFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         String uri = request.getRequestURI();
+
+        boolean isApi = uri.contains("/api/v1/");
+        boolean isAnalytics = uri.contains("/admin/analytics");
+
+        if (isApi && !isAnalytics) {
+            logActivity(request, uri);
+        }
+
+        filterChain.doFilter(request, response);
+    }
+
+    private void logActivity(HttpServletRequest request, String uri) {
         String method = request.getMethod();
 
-        if (uri.contains("/api/v1/")) {
-
-            String userAgent = request.getHeader("User-Agent");
-            String browser = "Other";
-
-            if (userAgent != null) {
-                if (userAgent.contains("Edg")) browser = "Edge";
-                else if (userAgent.contains("Chrome")) browser = "Chrome";
-                else if (userAgent.contains("Firefox")) browser = "Firefox";
-                else if (userAgent.contains("Safari")) browser = "Safari";
-            }
-
-            String currentUsername = "Anonymous";
-            var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-            if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
-                currentUsername = auth.getName();
-            }
-
-            if ((uri.contains("/login") && method.equals("POST")) || method.equals("POST") || method.equals("PUT")) {
-                UserActivity log = UserActivity.builder()
-                        .username(currentUsername)
-                        .browser(browser)
-                        .action(method + " " + uri)
-                        .timestamp(LocalDateTime.now())
-                        .build();
-                repository.save(log);
-            }
+        String userAgent = request.getHeader("User-Agent");
+        String browser = "Other";
+        if (userAgent != null) {
+            if (userAgent.contains("Edg")) browser = "Edge";
+            else if (userAgent.contains("Firefox")) browser = "Firefox";
+            else if (userAgent.contains("Chrome")) browser = "Chrome";
+            else if (userAgent.contains("Safari")) browser = "Safari";
         }
-        filterChain.doFilter(request, response);
+
+        String currentUsername = "Anonymous";
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
+            currentUsername = auth.getName();
+        }
+
+        UserActivity log = UserActivity.builder()
+                .username(currentUsername)
+                .browser(browser)
+                .requestUri(uri)
+                .action(method)
+                .timestamp(LocalDateTime.now())
+                .build();
+
+        repository.save(log);
     }
 }
