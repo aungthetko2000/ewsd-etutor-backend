@@ -3,7 +3,7 @@ package org.ewsd.controller.submission;
 import org.ewsd.entity.submission.Submission;
 import org.ewsd.entity.user.User;
 import org.ewsd.repository.submission.SubmissionRepository;
-import org.ewsd.service.fileStorage.FileStorageService;
+import org.ewsd.service.file.FileStorageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
