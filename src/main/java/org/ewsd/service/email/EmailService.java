@@ -8,8 +8,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -18,23 +16,63 @@ public class EmailService {
     private final JavaMailSender javaMailSender;
 
     @Async
-    public void sendHTMLMail() {
+    public void sendHTMLMail(String toEmail, String studentEmail, String password) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
             helper.setFrom("chanmyae.huawei@gmail.com");
-            helper.setTo("chanmyae.cma30@gmail.com");
-            helper.setSubject("email sent");
-            helper.setText(getOtpHtmlMessage("123456"),true);
-
+            helper.setTo(toEmail);
+            helper.setSubject("Student Account Created");
+            helper.setText(getAccountHtmlMessage(studentEmail,password), true);
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
             log.error("Error sending HTML mail: ", e);
         }
     }
 
-    private String getAccountHtmlMessage(String password) {
+    public void sendInactivityEmail(String toEmail) {
+        try {
+
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+            helper.setFrom("chanmyae.huawei@gmail.com");
+            helper.setTo(toEmail);
+            helper.setSubject("28 days inactive warning!");
+
+            helper.setText(getInactivityMessage(), true);
+
+            javaMailSender.send(mimeMessage);
+
+        } catch (Exception e) {
+            log.error("Error sending inactivity email: ", e);
+        }
+    }
+
+    private String getInactivityMessage() {
+
+        return """
+        <html>
+        <body style="font-family:Arial">
+
+        <h2>28 days inactive warning!</h2>
+
+        <p>You have not logged in for <b>28 days</b>.</p>
+
+        <p>Please log in to continue your learning.</p>
+
+        <br>
+
+        <p>Best Regards,<br>
+        E-Tutor Team</p>
+
+        </body>
+        </html>
+        """;
+    }
+
+    private String getAccountHtmlMessage(String email,String password) {
         return """
         <!DOCTYPE html>
         <html>
@@ -68,25 +106,30 @@ public class EmailService {
                                 Hello, This is test email,
                                 <br/><br/>
                                 Your account has been successfully created.
-                                Below is your temporary password.
+                                Below is your edu email and temporary password.
                                 Please change it after your first login.
                             </td>
                         </tr>
-
-                        <tr>
-                            <td align="center" style="padding:35px 0;">
-                                <div style="
-                                    font-size:22px;
-                                    font-weight:bold;
-                                    padding:15px 25px;
-                                    border:2px dashed #4F46E5;
-                                    border-radius:8px;
-                                    color:#4F46E5;
-                                    display:inline-block;">
-                                    %s
-                                </div>
-                            </td>
-                        </tr>
+                        
+                         <!-- LOGIN INFO -->
+                         <tr>
+                             <td style="padding-top:20px;font-size:15px;color:#444;">
+                                  <p><strong>Login Email:</strong> %s</p>
+                                     <p>
+                                        <strong>Temporary Password:</strong><br/>
+                                           <span style="
+                                                   display:inline-block;
+                                                   margin-top:8px;
+                                                   padding:10px 15px;
+                                                   background:#f3f4f6;
+                                                   border-radius:6px;
+                                                   font-weight:bold;
+                                                   letter-spacing:1px;">
+                                                   %s
+                                           </span>
+                                  </p>
+                             </td>
+                         </tr>
 
                         <tr>
                             <td style="font-size:14px;color:#666;">
@@ -116,7 +159,7 @@ public class EmailService {
 
         </body>
         </html>
-        """.formatted(password);
+        """.formatted(email,password);
     }
 
     private String getOtpHtmlMessage(String otp) {

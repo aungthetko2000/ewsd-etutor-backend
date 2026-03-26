@@ -13,7 +13,8 @@ INSERT INTO permissions (name, description, category) VALUES
 ('UPDATE_NOTIFICATION', 'Can schedule meeting', 'NOTIFICATION'),
 ('LIKE_BLOG_POST', 'Can like blog', 'BLOG'),
 ('POST_COMMENT', 'Can post a comment on blogs', 'COMMENT'),
-('VIEW_ALL_COMMENT', 'Can see a comment on blogs', 'COMMENT');
+('VIEW_ALL_COMMENT', 'Can see a comment on blogs', 'COMMENT'),
+('CREATE_STUDENT', 'Can create student account', 'STUDENT');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
@@ -27,7 +28,8 @@ FROM roles r, permissions p
 WHERE r.name = 'STAFF'
   AND p.name IN (
     'VIEW_STAFF_DASHBOARD',
-    'BULK_ALLOCATION'
+    'BULK_ALLOCATION',
+    'CREATE_STUDENT'
   );
 
 -- STUDENT PERMISSIONS

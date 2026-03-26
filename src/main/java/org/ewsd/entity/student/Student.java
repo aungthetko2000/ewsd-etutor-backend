@@ -24,6 +24,8 @@ public class Student {
     private String fullName;
     private Integer age;
     private String grade;
+    private String eduEmail;
+    private String email;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

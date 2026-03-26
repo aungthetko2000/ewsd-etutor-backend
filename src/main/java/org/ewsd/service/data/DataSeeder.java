@@ -63,58 +63,6 @@ public class DataSeeder implements CommandLineRunner {
                 .build();
         staffRepository.save(staff);
 
-        List<User> userLists = List.of(
-                new User(null, "mgmg@example.com", passwordEncoder.encode("password")
-                , "Mg", "Mg", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
-                        new HashSet<>(), null, null, null, null),
-                new User(null, "aungaung@example.com", passwordEncoder.encode("password"),
-                        "Aung", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null),
-                new User(null, "kyaw@example.com", passwordEncoder.encode("password")
-                        , "Kyaw", "Kyaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
-                        new HashSet<>(), null, null, null, null),
-                new User(null, "hla@example.com", passwordEncoder.encode("password"),
-                        "Hla", "Hla", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null),
-                new User(null, "su@example.com", passwordEncoder.encode("password"),
-                "Su", "Su", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null),
-                new User(null, "moe@example.com", passwordEncoder.encode("password"),
-                "Moe", "Moe", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null),
-                new User(null, "zaw@example.com", passwordEncoder.encode("password"),
-                        "Zaw", "Zaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null),
-                new User(null, "ko@example.com", passwordEncoder.encode("password"),
-                        "Ko", "Ko", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null,null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null),
-                new User(null, "myoaung@example.com", passwordEncoder.encode("password"),
-                        "Myo", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null)
-        );
-
-        List<User> savedUser = userRepository.saveAll(userLists);
-
-        //test assigned student
-        List<Tutor> tutors = tutorRepository.findAll();
-        Tutor firstTutor = tutors.get(0); // take first tutor
-
-        List<Student> studentList = new ArrayList<>();
-
-        for (int i = 0; i < savedUser.size(); i++) {
-            User user = savedUser.get(i);
-
-            Student student = Student.builder()
-                    .fullName(user.getFirstName() + " " + user.getLastName())
-                    .age(16)
-                    .grade("Grade 10")
-                    .user(user)
-                    .tutor(i == 0 ? null : firstTutor) // ✅ first student unassigned
-                    .build();
-
-            studentList.add(student);
-        }
-
-        studentRepository.saveAll(studentList);
+        //deleted test students data
     }
 }
