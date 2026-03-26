@@ -1,4 +1,4 @@
-package org.ewsd.repository.repository;
+package org.ewsd.repository.notification;
 
 import org.ewsd.entity.Notification;
 import org.ewsd.enumeration.NotificationStatus;
