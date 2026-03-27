@@ -74,18 +74,13 @@ public class DataSeeder implements CommandLineRunner {
 
         List<User> savedUser = userRepository.saveAll(userLists);
 
-        List<Tutor> tutors = tutorRepository.findAll();
-        Tutor firstTutor = tutors.get(0);
-
+//        List<Tutor> tutors = tutorRepository.findAll();
+//        Tutor firstTutor = tutors.get(0);
+//
         List<Student> studentList = savedUser.stream().map(
                 user -> Student.builder()
                         .fullName(user.getFirstName() + " " + user.getLastName())
-                        .age(16)
-                        .grade("Grade 10")
-                        .user(user)
-                        .tutor(firstTutor)
-                        .build()
-        ).toList();
+                        .user(user).build()).toList();
 
         studentRepository.saveAll(studentList);
 
