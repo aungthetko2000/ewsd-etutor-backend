@@ -5,6 +5,7 @@ import org.ewsd.dto.message.ChatContactResponse;
 import org.ewsd.dto.message.ChatMessageRequest;
 import org.ewsd.dto.message.ChatMessageResponse;
 import org.ewsd.dto.student.StudentResponseDto;
+import org.ewsd.dto.user.UserResponseDto;
 import org.ewsd.entity.message.Message;
 import org.ewsd.entity.student.Student;
 import org.ewsd.entity.user.User;
@@ -71,27 +72,32 @@ public class MessageServiceImpl implements MessageService {
     @Override
     @Transactional(readOnly = true)
     public List<ChatContactResponse> getChatContacts(Long userId) {
-        return messageRepository.findLatestConversations(userId)
+        List<Message> latestMessages = messageRepository.findLatestConversations(userId);
+        return latestMessages
                 .stream()
-                .map(msg -> ChatContactResponse.from(msg, userId))
+                .map(msg -> {
+                    ChatContactResponse res = ChatContactResponse.from(msg, userId);
+                    Long partnerId = res.getPartnerId();
+                    long unreadCount = messageRepository.countUnreadMessages(userId, partnerId);
+                    res.setUnreadCount(unreadCount);
+                    return res;
+                })
                 .toList();
     }
 
     @Override
-    public List<StudentResponseDto> getAllStudents(String name) {
-        return studentRepository.findAllByStudentName(name)
+    public List<UserResponseDto> getAllUsers(String name) {
+        return userRepository.searchUsers(name)
                 .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());
     }
 
-    private StudentResponseDto mapToDto(Student student) {
-        return StudentResponseDto.builder()
-                .id(student.getId())
-                .fullName(student.getFullName())
-                .email(student.getUser().getEmail())
-                .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
-                .assigned(student.getTutor() != null)
+    private UserResponseDto mapToDto(User user) {
+        return UserResponseDto.builder()
+                .id(user.getId())
+                .fullName(user.getFirstName() + ' ' + user.getLastName())
+                .email(user.getEmail())
                 .build();
     }
 }

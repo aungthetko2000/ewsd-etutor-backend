@@ -21,6 +21,7 @@ public class ChatContactResponse {
     private String partnerFirstName;
     private String partnerLastName;
     private String partnerEmail;
+    private long unreadCount;
 
     public static ChatContactResponse from(Message msg, Long currentUserId) {
 
