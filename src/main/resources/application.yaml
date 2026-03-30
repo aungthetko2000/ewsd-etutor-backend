@@ -1,6 +1,7 @@
 app:
   upload:
-    dir: ${user.home}/Documents/blogs
+    image: ${user.home}/Documents/blogs
+    document: ${user.home}/Documents/submission
 
 spring:
   mail:
