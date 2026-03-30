@@ -51,7 +51,7 @@ public class FileStorageServiceImpl implements FileStorageService {
     }
 
     @Override
-    public String saveAssignment(MultipartFile file, Long assignmentId, Long studentId) {
+    public String saveAssignment(MultipartFile file) {
         try {
             String originalFilename = file.getOriginalFilename();
             String extension = StringUtils.getFilenameExtension(originalFilename);
@@ -63,8 +63,6 @@ public class FileStorageServiceImpl implements FileStorageService {
             String newFileName = UUID.randomUUID().toString() + "." + extension.toLowerCase();
 
             Path targetDirectory = Paths.get(documentUrl)
-                    .resolve(String.valueOf(assignmentId))
-                    .resolve(String.valueOf(studentId))
                     .normalize();
 
             Files.createDirectories(targetDirectory);

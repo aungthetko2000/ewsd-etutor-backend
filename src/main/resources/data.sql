@@ -19,7 +19,8 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_ALL_COMMENT', 'Can see a comment on blogs', 'COMMENT'),
 ('CREATE_STUDENT', 'Can create student account', 'STUDENT'),
 ('GET_UNREAD_COUNT', 'Can get unread message count', 'MESSAGE'),
-('MARK_AS_READ', 'Mark unread message', 'MESSAGE');
+('MARK_AS_READ', 'Mark unread message', 'MESSAGE'),
+('SUBMIT_DOCUMENT', 'Submit document', 'DOCUMENT');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
@@ -55,7 +56,8 @@ WHERE r.name = 'STUDENT'
     'POST_COMMENT',
     'VIEW_ALL_COMMENT',
     'GET_UNREAD_COUNT',
-    'MARK_AS_READ'
+    'MARK_AS_READ',
+    'SUBMIT_DOCUMENT'
    );
 
 -- TUTOR PERMISSIONS
@@ -81,5 +83,6 @@ WHERE r.name = 'TUTOR'
     'MARK_AS_READ',
     'GET_UNREAD_COUNT',
     'GET_CHAT_CONTACTS',
-    'VIEW_ALL_USERS'
+    'VIEW_ALL_USERS',
+    'SUBMIT_DOCUMENT'
   );
