@@ -1,11 +1,13 @@
 package org.ewsd.service.data;
 
 import lombok.RequiredArgsConstructor;
+import org.ewsd.entity.admin.Admin;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.staff.Staff;
 import org.ewsd.entity.student.Student;
 import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
+import org.ewsd.repository.admin.AdminRepository;
 import org.ewsd.repository.role.RoleRepository;
 import org.ewsd.repository.staff.StaffRepository;
 import org.ewsd.repository.student.StudentRepository;
@@ -32,6 +34,7 @@ public class DataSeeder implements CommandLineRunner {
     private final StaffRepository staffRepository;
     private final StudentRepository studentRepository;
     private final TutorRepository tutorRepository;
+    private final AdminRepository adminRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -108,6 +111,29 @@ public class DataSeeder implements CommandLineRunner {
                 .user(staffUser)
                 .build();
         staffRepository.save(staff);
-    }
 
+        Role adminRole = roleRepository.findByName("ADMIN")
+                .orElseThrow(() -> new RuntimeException("Error: Role ADMIN is not found."));
+
+        User adminUser = User.builder()
+                .email("admin@etutor.com")
+                .password(passwordEncoder.encode("admin123"))
+                .firstName("System")
+                .lastName("Admin")
+                .roles(Set.of(adminRole))
+                .enabled(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .build();
+
+        adminUser = userRepository.save(adminUser);
+
+        Admin adminProfile = Admin.builder()
+                .fullName(adminUser.getFirstName() + " " + adminUser.getLastName())
+                .user(adminUser)
+                .build();
+
+        adminRepository.save(adminProfile);
+    }
 }

@@ -43,7 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/login", "/api/v1/refresh", "/images/**").permitAll()
                         .requestMatchers("/ws-stomp/**").permitAll()
-                        .requestMatchers("/api/v1/admin/analytics/**").hasAnyRole("STAFF", "ADMIN")
+                        .requestMatchers("/api/v1/admin/analytics/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session ->
