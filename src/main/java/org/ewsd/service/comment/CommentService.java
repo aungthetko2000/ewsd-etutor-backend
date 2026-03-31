@@ -10,4 +10,8 @@ public interface CommentService {
     CommentResponseDto saveComment(CommentRequestDTO dto);
     
     List<CommentResponseDto> getCommentsByBlog(Long blogId);
+
+    void updateComment(Long id, CommentRequestDTO dto, Long currentUserId, boolean isAdmin);
+
+    void deleteComment(Long id, Long currentUserId, boolean isAdmin);
 }
