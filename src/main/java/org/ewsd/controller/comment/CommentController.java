@@ -35,4 +35,25 @@ public class CommentController {
         ApiResponse<List<CommentResponseDto>> response = ApiResponse.success(list, "Get all comments by blog");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    @PreAuthorize("(hasRole('STUDENT') OR hasRole('TUTOR')) AND hasAuthority('EDIT_COMMENT')")
+    public ResponseEntity<ApiResponse<String>> updateComment(
+            @PathVariable Long id,
+            @RequestBody CommentRequestDTO dto) {
+
+        commentService.updateComment(id, dto, dto.getAuthorId(), false);
+        return ResponseEntity.ok(ApiResponse.success(null, "Comment updated successfully"));
+    }
+
+    @DeleteMapping("/{id}")
+    @PreAuthorize("(hasRole('STUDENT') OR hasRole('TUTOR') OR hasRole('ADMIN')) AND hasAuthority('DELETE_COMMENT')")
+    public ResponseEntity<ApiResponse<String>> deleteComment(
+            @PathVariable Long id,
+            @RequestParam Long userId,
+            @RequestParam boolean isAdmin) {
+
+        commentService.deleteComment(id, userId, isAdmin);
+        return ResponseEntity.ok(ApiResponse.success(null, "Comment deleted successfully"));
+    }
 }

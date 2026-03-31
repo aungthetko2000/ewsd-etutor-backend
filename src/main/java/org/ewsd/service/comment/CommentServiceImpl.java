@@ -67,4 +67,31 @@ public class CommentServiceImpl implements CommentService {
                 .timeStamp(comment.getCreatedAt() != null ? comment.getCreatedAt() : null)
                 .build();
     }
+
+    @Override
+    @Transactional
+    public void updateComment(Long id, CommentRequestDTO dto, Long currentUserId, boolean isAdmin) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
+
+        if (!comment.getAuthorId().equals(currentUserId) && !isAdmin) {
+            throw new RuntimeException("Unauthorized: You cannot edit this comment.");
+        }
+
+        comment.setDescription(dto.getDescription());
+        commentRepository.save(comment);
+    }
+
+    @Override
+    @Transactional
+    public void deleteComment(Long id, Long currentUserId, boolean isAdmin) {
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
+
+        if (!comment.getAuthorId().equals(currentUserId) && !isAdmin) {
+            throw new RuntimeException("Unauthorized: You cannot delete this comment.");
+        }
+
+        commentRepository.delete(comment);
+    }
 }
