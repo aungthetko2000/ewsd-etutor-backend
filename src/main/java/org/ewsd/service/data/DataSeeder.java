@@ -95,7 +95,7 @@ public class DataSeeder implements CommandLineRunner {
 
         List<User> savedUser = userRepository.saveAll(userLists);
 
-        //test assigned student
+        //test assigned student to tutor
         List<Tutor> tutors = tutorRepository.findAll();
         Tutor firstTutor = tutors.get(0); // take first tutor
 
