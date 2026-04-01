@@ -3,6 +3,8 @@ package org.ewsd.service.tutor;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.student.StudentResponseDto;
 import org.ewsd.dto.tutor.TutorResponse;
+import org.ewsd.entity.tutor.Tutor;
+import org.ewsd.entity.user.User;
 import org.ewsd.repository.tutor.TutorRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -28,6 +30,14 @@ public class TutorServiceImpl implements TutorService {
     }
 
     @Override
+    public Long getTutorIdByUser(User user) {
+        Tutor tutor = tutorRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RuntimeException("Tutor not found"));
+
+        return tutor.getId();
+    }
+
+    @Override
     public List<StudentResponseDto> getAssignedStudents(Long tutorId) {
 
         return studentRepository.findByTutorId(tutorId)
@@ -36,8 +46,8 @@ public class TutorServiceImpl implements TutorService {
                         .id(student.getId())
                         .fullName(student.getFullName())
                         .email(student.getUser().getEmail())
-                        .currentTutorId(tutorId)
-                        .assigned(true)
+                        .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
+                        .assigned(student.getTutor() != null)
                         .age(student.getAge())
                         .session(student.getSession())
                         .build())
