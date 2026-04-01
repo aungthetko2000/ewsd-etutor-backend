@@ -106,10 +106,14 @@ public class DataSeeder implements CommandLineRunner {
 
             Student student = Student.builder()
                     .fullName(user.getFirstName() + " " + user.getLastName())
-                    .age(16)
-                    .grade("Grade 10")
+                    .age(23)
+                    .session("Final Year")
+                    .phone("09123456789")
+                    .address("Yangon")
+                    .status("ACTIVE")
+                    .course("Computing")
                     .user(user)
-                    .tutor(i == 0 ? null : firstTutor) // ✅ first student unassigned
+                    .tutor(i == 0 ? null : firstTutor) // first student unassigned
                     .build();
 
             studentList.add(student);

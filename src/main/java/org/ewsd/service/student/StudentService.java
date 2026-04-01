@@ -43,8 +43,16 @@ public class StudentService {
                 .fullName(student.getFullName())
                 .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
                 .assigned(student.getTutor() != null)
+                .email(student.getUser().getEmail()) //NEW
                 .age(student.getAge())       // NEW
-                .grade(student.getGrade())   // NEW
+                .session(student.getSession())   // NEW
+
+                //New fields added
+                .phone(student.getPhone())
+                .address(student.getAddress())
+                .status(student.getStatus())
+                .course(student.getCourse())
+                .registrationDate(student.getRegistrationDate())
                 .build();
     }
 

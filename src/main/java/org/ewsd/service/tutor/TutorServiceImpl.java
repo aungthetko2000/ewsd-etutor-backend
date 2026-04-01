@@ -39,7 +39,7 @@ public class TutorServiceImpl implements TutorService {
                         .currentTutorId(tutorId)
                         .assigned(true)
                         .age(student.getAge())
-                        .grade(student.getGrade())
+                        .session(student.getSession())
                         .build())
                 .toList();
     }
