@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.comment.CommentRequestDTO;
 import org.ewsd.dto.comment.CommentResponseDto;
 import org.ewsd.dto.response.ApiResponse;
-import org.ewsd.entity.comment.Comment;
 import org.ewsd.service.comment.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
