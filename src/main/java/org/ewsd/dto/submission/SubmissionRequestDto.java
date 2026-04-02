@@ -12,9 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SubmissionRequestDto {
 
-    private String filePath;
     private LocalDateTime uploadTimestamp;
-    private LocalDate dueDate;
-    private String description;
+    private Long assignmentId;
 
 }
