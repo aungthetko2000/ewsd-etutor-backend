@@ -1,10 +1,7 @@
 package org.ewsd.entity.role;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.ewsd.entity.permission.Permission;
 
 import java.util.HashSet;
@@ -14,7 +11,8 @@ import java.util.Set;
 @Table(name = "roles")
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Builder
 public class Role {
 

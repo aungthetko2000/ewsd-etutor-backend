@@ -1,111 +1,41 @@
 package org.ewsd.controller.submission;
 
-import org.ewsd.entity.submission.Submission;
-import org.ewsd.entity.user.User;
-import org.ewsd.repository.submission.SubmissionRepository;
-import org.ewsd.service.file.FileStorageService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
-import org.springframework.http.HttpHeaders;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.ewsd.dto.response.ApiResponse;
+import org.ewsd.dto.submission.SubmissionRequestDto;
+import org.ewsd.dto.submission.SubmissionResponseDto;
+import org.ewsd.service.document.SubmissionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/submissions")
+@RequiredArgsConstructor
 public class SubmissionController {
 
-    @Autowired
-    private FileStorageService fileStorageService;
+    private final SubmissionService submissionService;
 
-    @Autowired
-    private SubmissionRepository submissionRepository;
-
-    @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("assignmentId") Long assignmentId) {
-
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) auth.getPrincipal();
-
-        if (currentUser.getStudent() == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only students can upload assignments.");
-        }
-
-        Long studentId = currentUser.getStudent().getId();
-
-        String savedPath = fileStorageService.saveAssignment(file, assignmentId, studentId);
-
-        Submission submission = new Submission();
-        submission.setAssignmentId(assignmentId);
-        submission.setStudentId(studentId);
-        submission.setFilePath(savedPath);
-        submission.setUploadTimestamp(LocalDateTime.now());
-
-        submissionRepository.save(submission);
-
-        return ResponseEntity.ok("Assignment uploaded successfully!");
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('SUBMIT_DOCUMENT')")
+    public ResponseEntity<ApiResponse<SubmissionResponseDto>> submitDocument(@Valid @ModelAttribute SubmissionRequestDto requestDto, @RequestParam("file") MultipartFile file) {
+        SubmissionResponseDto newBlog = submissionService.submitDocument(requestDto, file);
+        ApiResponse<SubmissionResponseDto> response = ApiResponse.success(newBlog, "Document Submitted");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/download/{submissionId}")
-    public ResponseEntity<?> downloadFile(@PathVariable Long submissionId) {
+    @GetMapping("/{studentId}")
+    @PreAuthorize("hasAuthority('VIEW_INDIVIDUAL_DOCUMENT')")
+    public ResponseEntity<ApiResponse<List<SubmissionResponseDto>>> getAllSubmissions(@PathVariable Long studentId) {
+        List<SubmissionResponseDto> list = submissionService.getAllDocumentsByStudentId(studentId);
+        ApiResponse<List<SubmissionResponseDto>> response = ApiResponse.success(list, "Document Submitted");
+        return new ResponseEntity<>(response, HttpStatus.OK);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) auth.getPrincipal();
-
-        Submission submission = submissionRepository.findById(submissionId)
-                .orElseThrow(() -> new RuntimeException("File not found"));
-
-        boolean isTutor = currentUser.getTutor() != null;
-        boolean isOwner = currentUser.getStudent() != null &&
-                submission.getStudentId().equals(currentUser.getStudent().getId());
-
-        if (!isTutor && !isOwner) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Access Denied.");
-        }
-
-        try {
-            Path path = Paths.get(submission.getFilePath());
-            Resource resource = new UrlResource(path.toUri());
-
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-                    .body(resource);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
-        }
-    }
-
-    @GetMapping("/my-submissions")
-    public ResponseEntity<?> getMySubmissions() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) auth.getPrincipal();
-
-        if (currentUser.getStudent() == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only students can view their submissions.");
-        }
-
-        return ResponseEntity.ok(submissionRepository.findByStudentId(currentUser.getStudent().getId()));
-    }
-
-    @GetMapping("/assignment/{assignmentId}")
-    public ResponseEntity<?> getAssignmentSubmissions(@PathVariable Long assignmentId) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User currentUser = (User) auth.getPrincipal();
-
-        if (currentUser.getTutor() == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Only tutors can view all submissions for an assignment.");
-        }
-
-        return ResponseEntity.ok(submissionRepository.findByAssignmentId(assignmentId));
     }
 }

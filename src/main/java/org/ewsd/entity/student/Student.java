@@ -3,6 +3,7 @@ package org.ewsd.entity.student;
 import jakarta.persistence.*;
 import lombok.*;
 import org.ewsd.entity.meeting.Meeting;
+import org.ewsd.entity.submission.Submission;
 import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
 
@@ -36,4 +37,7 @@ public class Student {
     @ManyToMany(mappedBy = "students", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<Meeting> meetings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "student")
+    private List<Submission> submissions;
 }
