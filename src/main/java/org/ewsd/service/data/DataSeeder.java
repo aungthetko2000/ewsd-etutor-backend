@@ -33,7 +33,6 @@ public class DataSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final StaffRepository staffRepository;
     private final StudentRepository studentRepository;
-    private final TutorRepository tutorRepository;
     private final AdminRepository adminRepository;
 
     @Override

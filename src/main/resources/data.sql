@@ -2,6 +2,7 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_STUDENT_DASHBOARD', 'Can view dashboard', 'DASHBOARD'),
 ('VIEW_TUTOR_DASHBOARD', 'Can view dashboard', 'DASHBOARD'),
 ('VIEW_STAFF_DASHBOARD', 'Can view dashboard', 'DASHBOARD'),
+('VIEW_ADMIN_DASHBOARD', 'Can view dashboard', 'DASHBOARD'),
 ('BULK_ALLOCATION', 'Can allocate bulk', 'ALLOCATE'),
 ('VIEW_BLOG_LIST', 'Can view blog list', 'BLOG'),
 ('VIEW_ASSIGNED_STUDENTS', 'Can view assigned students', 'ASSIGNED'),
@@ -90,4 +91,7 @@ INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
 FROM roles r, permissions p
 WHERE r.name = 'ADMIN'
-  AND p.name IN ('VIEW_ANALYTICS');
+  AND p.name IN (
+      'VIEW_ANALYTICS',
+      'VIEW_ADMIN_DASHBOARD'
+      );

@@ -26,8 +26,9 @@ public class ActivityFilter extends OncePerRequestFilter {
 
         boolean isApi = uri.contains("/api/v1/");
         boolean isAnalytics = uri.contains("/admin/analytics");
+        boolean isChatApi = uri.contains("/api/v1/chat");
 
-        if (isApi && !isAnalytics) {
+        if (isApi && !isAnalytics && !isChatApi) {
             logActivity(request, uri);
         }
 
