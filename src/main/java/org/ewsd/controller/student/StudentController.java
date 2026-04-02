@@ -3,6 +3,7 @@ package org.ewsd.controller.student;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.allocation.TutorAllocationResponse;
 import org.ewsd.dto.response.ApiResponse;
+import org.ewsd.dto.student.StudentRegisterRequest;
 import org.ewsd.dto.student.StudentResponseDto;
 import org.ewsd.dto.tutor.TutorResponse;
 import org.ewsd.service.student.StudentService;
@@ -26,5 +27,12 @@ public class StudentController {
         List<StudentResponseDto> tutorResponse = studentService.getStudents(unassignedOnly);
         ApiResponse<List<StudentResponseDto>> response = ApiResponse.success(tutorResponse, "Retrieve all unassigned successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    @PreAuthorize("hasRole('STAFF') AND hasAuthority('CREATE_STUDENT')")
+    public ResponseEntity<ApiResponse<StudentResponseDto>> registerStudent(@RequestBody StudentRegisterRequest request) {
+        StudentResponseDto response = studentService.registerStudent(request);
+        return ResponseEntity.ok(ApiResponse.success(response, "Student created successfully"));
     }
 }
