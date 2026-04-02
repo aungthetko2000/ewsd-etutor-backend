@@ -4,6 +4,8 @@ import lombok.Builder;
 import lombok.Data;
 import org.ewsd.entity.student.Student;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 public class StudentResponseDto {
@@ -16,5 +18,12 @@ public class StudentResponseDto {
     private String eduEmail; // student login email
 
     private Integer age;
-    private String grade;
+    private String session;
+
+    //new fields
+    private String phone;
+    private String address;
+    private String status;
+    private String course;
+    private LocalDateTime registrationDate;
 }

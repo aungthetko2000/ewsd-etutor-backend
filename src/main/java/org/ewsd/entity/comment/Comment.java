@@ -3,6 +3,8 @@ package org.ewsd.entity.comment;
 import jakarta.persistence.*;
 import lombok.*;
 import org.ewsd.entity.blog.Blog;
+import org.ewsd.entity.user.User;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -29,6 +31,10 @@ public class Comment {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @PrePersist
     protected void onCreate() {

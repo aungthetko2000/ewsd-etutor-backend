@@ -1,4 +1,4 @@
-package org.ewsd.controller.controller;
+package org.ewsd.controller.notification;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

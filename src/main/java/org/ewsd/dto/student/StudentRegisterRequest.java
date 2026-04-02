@@ -8,6 +8,8 @@ public class StudentRegisterRequest {
     private String email; //where email will be sent
     private String eduEmail; // student login email
 //    private String password;
+    private String email;
+    private String password;
     private String firstName;
     private String lastName;
 
