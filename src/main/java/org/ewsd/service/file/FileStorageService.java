@@ -6,5 +6,5 @@ public interface FileStorageService {
 
     String saveImage(MultipartFile file);
 
-    String saveAssignment(MultipartFile file, Long assignmentId, Long studentId);
+    String saveAssignment(MultipartFile file);
 }

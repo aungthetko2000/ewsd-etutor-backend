@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -34,6 +35,7 @@ public class DataSeeder implements CommandLineRunner {
     private final StaffRepository staffRepository;
     private final StudentRepository studentRepository;
     private final AdminRepository adminRepository;
+    private final TutorRepository tutorRepository;
 
     @Override
     public void run(String... args) throws Exception {
@@ -76,13 +78,29 @@ public class DataSeeder implements CommandLineRunner {
 
         List<User> savedUser = userRepository.saveAll(userLists);
 
-//        List<Tutor> tutors = tutorRepository.findAll();
-//        Tutor firstTutor = tutors.get(0);
-//
-        List<Student> studentList = savedUser.stream().map(
-                user -> Student.builder()
-                        .fullName(user.getFirstName() + " " + user.getLastName())
-                        .user(user).build()).toList();
+
+        List<Tutor> tutors = tutorRepository.findAll();
+        Tutor firstTutor = tutors.get(0); // take first tutor
+
+        List<Student> studentList = new ArrayList<>();
+
+        for (int i = 0; i < savedUser.size(); i++) {
+            User user = savedUser.get(i);
+
+            Student student = Student.builder()
+                    .fullName(user.getFirstName() + " " + user.getLastName())
+                    .age(23)
+                    .session("Final Year")
+                    .phone("09123456789")
+                    .address("Yangon")
+                    .status("ACTIVE")
+                    .course("Computing")
+                    .user(user)
+                    .tutor(i == 0 ? null : firstTutor) // first student unassigned
+                    .build();
+
+            studentList.add(student);
+        }
 
         studentRepository.saveAll(studentList);
 

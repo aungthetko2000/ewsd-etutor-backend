@@ -4,10 +4,12 @@ import org.ewsd.dto.response.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.student.StudentResponseDto;
 import org.ewsd.dto.tutor.TutorResponse;
+import org.ewsd.entity.user.User;
 import org.ewsd.service.tutor.TutorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,13 +33,20 @@ public class TutorController {
     @GetMapping("/assigned-students/{tutorId}")
     @PreAuthorize("hasRole('TUTOR') AND hasAuthority('VIEW_ASSIGNED_STUDENTS')")
     public ResponseEntity<ApiResponse<List<StudentResponseDto>>> getAssignedStudents(
-            @PathVariable Long tutorId) {
+            @PathVariable Long tutorId,
+            @AuthenticationPrincipal User user) {
 
-        List<StudentResponseDto> students = tutorService.getAssignedStudents(tutorId);
+        Long realTutorId = tutorService.getTutorIdByUser(user);
+
+        if (!realTutorId.equals(tutorId)) {
+            throw new RuntimeException("Unauthorized");
+        }
+
+        List<StudentResponseDto> students = tutorService.getAssignedStudents(realTutorId);
 
         ApiResponse<List<StudentResponseDto>> response =
                 ApiResponse.success(students, "Assigned students retrieved successfully");
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return ResponseEntity.ok(response);
     }
 }
