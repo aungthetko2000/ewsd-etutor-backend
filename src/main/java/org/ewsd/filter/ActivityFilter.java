@@ -24,20 +24,33 @@ public class ActivityFilter extends OncePerRequestFilter {
 
         String uri = request.getRequestURI();
 
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if (auth == null || !auth.isAuthenticated() || auth.getPrincipal().equals("anonymousUser")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        boolean isAdmin = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         boolean isApi = uri.contains("/api/v1/");
         boolean isAnalytics = uri.contains("/admin/analytics");
-        boolean isChatApi = uri.contains("/api/v1/chat");
+        boolean isIgnoredApi = uri.contains("/chat") || uri.contains("/notifications");
 
-        if (isApi && !isAnalytics && !isChatApi) {
-            logActivity(request, uri);
+        if (isApi && !isAnalytics && !isIgnoredApi) {
+            logActivity(request, uri, auth.getName());
         }
 
         filterChain.doFilter(request, response);
     }
 
-    private void logActivity(HttpServletRequest request, String uri) {
-        String method = request.getMethod();
-
+    private void logActivity(HttpServletRequest request, String uri, String username) {
         String userAgent = request.getHeader("User-Agent");
         String browser = "Other";
         if (userAgent != null) {
@@ -47,17 +60,11 @@ public class ActivityFilter extends OncePerRequestFilter {
             else if (userAgent.contains("Safari")) browser = "Safari";
         }
 
-        String currentUsername = "Anonymous";
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
-            currentUsername = auth.getName();
-        }
-
         UserActivity log = UserActivity.builder()
-                .username(currentUsername)
+                .username(username)
                 .browser(browser)
                 .requestUri(uri)
-                .action(method)
+                .action("PAGE_VIEW")
                 .timestamp(LocalDateTime.now())
                 .build();
 
