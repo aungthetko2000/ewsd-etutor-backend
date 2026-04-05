@@ -68,36 +68,36 @@ public class StudentService {
                 .build();
     }
 
-    public StudentResponseDto registerStudent(StudentRegisterRequest request) {
-
-        Role studentRole = roleRepository.findByName("STUDENT")
-                .orElseThrow(() -> new RuntimeException("Student role not found"));
-
-        User user = User.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .enabled(true)
-                .accountNonLocked(true)
-                .accountNonExpired(true)
-                .credentialsNonExpired(true)
-                .roles(Set.of(studentRole))
-                .customPermissions(new HashSet<>())
-                .build();
-
-        user = userRepository.save(user);
-
-        Student student = Student.builder()
-                .fullName(request.getFirstName() + " " + request.getLastName())
-                .age(request.getAge())
-                .grade(request.getGrade())
-                .user(user)
-                .build();
-
-        studentRepository.save(student);
-
-        return mapToDto(student);
-    }
+//    public StudentResponseDto registerStudent(StudentRegisterRequest request) {
+//
+//        Role studentRole = roleRepository.findByName("STUDENT")
+//                .orElseThrow(() -> new RuntimeException("Student role not found"));
+//
+//        User user = User.builder()
+//                .email(request.getEmail())
+//                .password(passwordEncoder.encode(request.getPassword()))
+//                .firstName(request.getFirstName())
+//                .lastName(request.getLastName())
+//                .enabled(true)
+//                .accountNonLocked(true)
+//                .accountNonExpired(true)
+//                .credentialsNonExpired(true)
+//                .roles(Set.of(studentRole))
+//                .customPermissions(new HashSet<>())
+//                .build();
+//
+//        user = userRepository.save(user);
+//
+//        Student student = Student.builder()
+//                .fullName(request.getFirstName() + " " + request.getLastName())
+//                .age(request.getAge())
+//                .grade(request.getGrade())
+//                .user(user)
+//                .build();
+//
+//        studentRepository.save(student);
+//
+//        return mapToDto(student);
+//    }
 
 }

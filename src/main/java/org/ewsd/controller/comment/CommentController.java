@@ -35,6 +35,14 @@ public class CommentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/submission/{submissionId}")
+    @PreAuthorize("(hasRole('STUDENT') OR hasRole('TUTOR')) AND hasAuthority('VIEW_ALL_FEEDBACKS')")
+    public ResponseEntity<ApiResponse<List<CommentResponseDto>>> getFeedBacks(@PathVariable Long submissionId) {
+        List<CommentResponseDto> list = commentService.getCommentsBySubmission(submissionId);
+        ApiResponse<List<CommentResponseDto>> response = ApiResponse.success(list, "Get all comments by blog");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PutMapping("/{id}")
     @PreAuthorize("(hasRole('STUDENT') OR hasRole('TUTOR')) AND hasAuthority('EDIT_COMMENT')")
     public ResponseEntity<ApiResponse<String>> updateComment(

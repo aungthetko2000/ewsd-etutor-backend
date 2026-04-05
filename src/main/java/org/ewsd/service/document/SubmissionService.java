@@ -10,5 +10,7 @@ public interface SubmissionService {
 
     SubmissionResponseDto submitDocument(SubmissionRequestDto request, MultipartFile document);
 
-    List<SubmissionResponseDto> getAllDocumentsByStudentId(Long studentId);
+    List<SubmissionResponseDto> getAllDocumentsByStudentId(Long studentId, Long assignmentId);
+
+    List<SubmissionResponseDto> getAllDocumentsId(Long studentId);
 }

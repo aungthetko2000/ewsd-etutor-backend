@@ -70,7 +70,7 @@ public class FileStorageServiceImpl implements FileStorageService {
             Path targetLocation = targetDirectory.resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return targetLocation.toString();
+            return newFileName;
 
         } catch (IOException e) {
             throw new RuntimeException("Failed to store file securely: " + e.getMessage());

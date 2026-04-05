@@ -51,22 +51,14 @@ public class SubmissionServiceImpl implements SubmissionService {
         Assignment assignment = assignmentRepository.findById(request.getAssignmentId())
                 .orElseThrow(() -> new IllegalArgumentException("Assignment not found"));
 
-        boolean alreadySubmitted = submissionRepository
-                .existsByStudentAndAssignment(student, assignment);
-
-        if (alreadySubmitted) {
-            throw new IllegalStateException("You already submitted this assignment");
-        }
-
         if (document == null || document.isEmpty()) {
             throw new IllegalArgumentException("Document file is required");
         }
 
-        String documentUrl = fileStorageService.saveAssignment(document);
+        String fileName = fileStorageService.saveAssignment(document);
 
         Submission submission = new Submission();
-        submission.setFilePath(documentUrl);
-        submission.setFileName(document.getOriginalFilename());
+        submission.setFileName(fileName);
         submission.setUploadTimestamp(LocalDateTime.now());
         submission.setAssignment(assignment);
         submission.setStudent(student);
@@ -77,7 +69,16 @@ public class SubmissionServiceImpl implements SubmissionService {
     }
 
     @Override
-    public List<SubmissionResponseDto> getAllDocumentsByStudentId(Long studentId) {
+    public List<SubmissionResponseDto> getAllDocumentsByStudentId(Long studentId, Long assignmentId) {
+        User user = userRepository.findById(studentId).orElseThrow(() ->  new IllegalArgumentException("User was not found"));
+        return submissionRepository.findByStudentIdAndAssignmentId(user.getStudent().getId(), assignmentId)
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<SubmissionResponseDto> getAllDocumentsId(Long studentId) {
         User user = userRepository.findById(studentId).orElseThrow(() ->  new IllegalArgumentException("User was not found"));
         return submissionRepository.findByStudentId(user.getStudent().getId())
                 .stream()

@@ -30,10 +30,20 @@ public class SubmissionController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{studentId}")
+    @GetMapping
     @PreAuthorize("hasAuthority('VIEW_INDIVIDUAL_DOCUMENT')")
-    public ResponseEntity<ApiResponse<List<SubmissionResponseDto>>> getAllSubmissions(@PathVariable Long studentId) {
-        List<SubmissionResponseDto> list = submissionService.getAllDocumentsByStudentId(studentId);
+    public ResponseEntity<ApiResponse<List<SubmissionResponseDto>>> getAllSubmissions(@RequestParam("studentId") Long studentId,
+                                                                                      @RequestParam("assignmentId") Long assignmentId) {
+        List<SubmissionResponseDto> list = submissionService.getAllDocumentsByStudentId(studentId, assignmentId);
+        ApiResponse<List<SubmissionResponseDto>> response = ApiResponse.success(list, "Document Submitted");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+
+    }
+
+    @GetMapping("/individual")
+    @PreAuthorize("hasAuthority('VIEW_INDIVIDUAL_DOCUMENT')")
+    public ResponseEntity<ApiResponse<List<SubmissionResponseDto>>> getSubmissionById(@RequestParam("studentId") Long studentId) {
+        List<SubmissionResponseDto> list = submissionService.getAllDocumentsId(studentId);
         ApiResponse<List<SubmissionResponseDto>> response = ApiResponse.success(list, "Document Submitted");
         return new ResponseEntity<>(response, HttpStatus.OK);
 
