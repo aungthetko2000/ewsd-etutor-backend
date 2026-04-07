@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.constants.SecurityConstants;
 import org.ewsd.dto.meeting.MeetingConfirmationRequest;
+import org.ewsd.dto.meeting.StudentMeetingDashboardDto;
 import org.ewsd.dto.schedule.MeetingRequestDto;
 import org.ewsd.dto.schedule.MeetingResponseDto;
 import org.ewsd.dto.student.StudentResponseDto;
@@ -23,6 +24,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -172,5 +175,52 @@ public class MeetingServiceImpl implements MeetingService {
                 .assigned(student.getTutor() != null)
                 .email(student.getUser().getEmail())
                 .build();
+    }
+
+    //View today’s meetings on student dashboard
+    @Override
+    public List<StudentMeetingDashboardDto> getTodayMeetingsForStudent(HttpServletRequest request) {
+
+        String bearer = request.getHeader("Authorization");
+        String token = bearer.substring(7);
+        String email = jwtUtil.extractEmail(token);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Student student = user.getStudent();
+
+        LocalDate today = LocalDate.now();
+
+        List<Meeting> meetings =
+                meetingRepository.findTodayMeetingsByStudent(student.getId(), today);
+
+        return meetings.stream().map(meeting -> {
+
+            LocalTime now = LocalTime.now();
+
+            String time;
+            String status;
+
+            if (now.isAfter(meeting.getStartTime()) && now.isBefore(meeting.getEndTime())) {
+                time = "On Going";
+                status = "ongoing";
+            } else {
+                time = meeting.getStartTime().toString(); // you can format later
+                status = "upcoming";
+            }
+
+            String tutorName = meeting.getTutor().getUser().getFirstName()
+                    + " " + meeting.getTutor().getUser().getLastName();
+
+            return StudentMeetingDashboardDto.builder()
+//                    .id(meeting.getId())
+//                    .name(tutorName)
+                    .session(meeting.getMeetingTitle())
+                    .time(time)
+                    .status(status)
+                    .build();
+
+        }).toList();
     }
 }
