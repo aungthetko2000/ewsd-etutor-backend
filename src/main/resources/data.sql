@@ -27,7 +27,9 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_ALL_ASSIGNMENT', 'View all assignment', 'ASSIGNMENT'),
 ('VIEW_ASSIGNMENT', 'View assignment', 'ASSIGNMENT'),
 ('VIEW_ALL_FEEDBACKS', 'View all feedbacks', 'FEEDBACK'),
-('VIEW_EXCEPTION_REPORT', 'View exception report', 'REPORT');
+('VIEW_EXCEPTION_REPORT', 'View exception report', 'REPORT'),
+('EDIT_COMMENT', 'Can edit own comment', 'COMMENT'),
+('DELETE_COMMENT', 'Can delete own comment', 'COMMENT');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
@@ -70,7 +72,9 @@ WHERE r.name = 'STUDENT'
     'VIEW_INDIVIDUAL_DOCUMENT',
     'VIEW_ALL_ASSIGNMENT',
     'VIEW_ASSIGNMENT',
-    'VIEW_ALL_FEEDBACKS'
+    'VIEW_ALL_FEEDBACKS',
+    'EDIT_COMMENT',
+    'DELETE_COMMENT'
    );
 
 -- TUTOR PERMISSIONS
@@ -102,7 +106,9 @@ WHERE r.name = 'TUTOR'
     'SUBMIT_ASSIGNMENT',
     'VIEW_ALL_ASSIGNMENT',
     'VIEW_ASSIGNMENT',
-    'VIEW_ALL_FEEDBACKS'
+    'VIEW_ALL_FEEDBACKS',
+    'EDIT_COMMENT',
+    'DELETE_COMMENT'
   );
 
 -- ADMIN PERMISSIONS
