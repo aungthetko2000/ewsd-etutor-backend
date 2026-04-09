@@ -138,4 +138,29 @@ public class BlogServiceImpl implements BlogService {
                 .likedByCurrentUser(liked)
                 .build();
     }
+
+    @Override
+    public List<BlogResponseDto> searchBlogs(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return getAllBlogs();
+        }
+
+        String sanitizedKeyword = keyword.trim();
+        if (sanitizedKeyword.length() < 3) {
+            return List.of();
+        }
+
+        return blogRepository.searchBlogs(sanitizedKeyword)
+                .stream()
+                .map(blog -> BlogResponseDto.builder()
+                        .id(blog.getId())
+                        .title(blog.getTitle())
+                        .content(blog.getContent())
+                        .authorName(blog.getUser().getFirstName() + " " + blog.getUser().getLastName())
+                        .imageUrl(blog.getImageUrl())
+                        .favoriteCount(blog.getFavoriteCount())
+                        .createdAt(blog.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
