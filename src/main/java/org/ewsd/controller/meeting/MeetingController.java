@@ -3,6 +3,7 @@ package org.ewsd.controller.meeting;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.meeting.MeetingConfirmationRequest;
+import org.ewsd.dto.meeting.StudentMeetingDashboardDto;
 import org.ewsd.dto.response.ApiResponse;
 import org.ewsd.dto.schedule.MeetingRequestDto;
 import org.ewsd.dto.schedule.MeetingResponseDto;
@@ -22,7 +23,8 @@ public class MeetingController {
     private final MeetingService meetingService;
 
     @PostMapping
-    @PreAuthorize("hasRole('TUTOR') AND hasAuthority('SCHEDULE_MEETING')")
+//    @PreAuthorize("hasRole('TUTOR') AND hasAuthority('SCHEDULE_MEETING')")
+    @PreAuthorize("hasRole('TUTOR')")
     public ResponseEntity<ApiResponse<MeetingResponseDto>> arrangeMeeting(@RequestBody MeetingRequestDto meetingRequestDto,
                                                                           HttpServletRequest request) {
         MeetingResponseDto meetingResponse = meetingService.createMeeting(meetingRequestDto, request);
@@ -52,5 +54,19 @@ public class MeetingController {
     public ResponseEntity<String> updateMeetingStatus(@PathVariable Long meetingId, @RequestBody MeetingConfirmationRequest request) {
         meetingService.updateMeetingStatus(meetingId, request);
         return new ResponseEntity<>("Successfully Updated", HttpStatus.OK);
+    }
+
+    //View today’s meetings on student dashboard
+    @GetMapping("/student/today")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<ApiResponse<List<StudentMeetingDashboardDto>>> getTodayMeetingsForStudent(
+            HttpServletRequest request) {
+
+        List<StudentMeetingDashboardDto> response =
+                meetingService.getTodayMeetingsForStudent(request);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(response, "Today's meetings fetched successfully")
+        );
     }
 }

@@ -6,7 +6,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @EnableAsync
 @SpringBootApplication
-public class EwsdEtutorBackendApplication {
+public class
+EwsdEtutorBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(EwsdEtutorBackendApplication.class, args);

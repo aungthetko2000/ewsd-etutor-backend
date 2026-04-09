@@ -2,6 +2,7 @@ package org.ewsd.service.meeting;
 
 import jakarta.servlet.http.HttpServletRequest;
 import org.ewsd.dto.meeting.MeetingConfirmationRequest;
+import org.ewsd.dto.meeting.StudentMeetingDashboardDto;
 import org.ewsd.dto.schedule.MeetingRequestDto;
 import org.ewsd.dto.schedule.MeetingResponseDto;
 
@@ -16,4 +17,7 @@ public interface MeetingService {
     List<String> getAllStudentEmailByTutor(Long tutorId, String email);
 
     void updateMeetingStatus(Long id, MeetingConfirmationRequest request);
+
+    //View today’s meetings on student dashboard
+    List<StudentMeetingDashboardDto> getTodayMeetingsForStudent(HttpServletRequest request);
 }
