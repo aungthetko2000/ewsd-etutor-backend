@@ -11,9 +11,15 @@ public class ResourceConfig implements WebMvcConfigurer {
     @Value("${app.upload.image}")
     private String uploadDir;
 
+    @Value("${app.upload.document}")
+    private String documentDir;
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/images/**")
                 .addResourceLocations("file:" + uploadDir + "/");
+
+        registry.addResourceHandler("/docs/**")
+                .addResourceLocations("file:" + documentDir + "/");
     }
 }

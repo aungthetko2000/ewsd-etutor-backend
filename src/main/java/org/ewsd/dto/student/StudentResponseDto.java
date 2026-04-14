@@ -20,10 +20,10 @@ public class StudentResponseDto {
     private Integer age;
     private String session;
 
-    //new fields
     private String phone;
     private String address;
     private String status;
     private String course;
     private LocalDateTime registrationDate;
+
 }

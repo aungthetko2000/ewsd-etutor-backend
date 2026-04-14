@@ -10,7 +10,9 @@ import java.util.List;
 @Repository
 public interface SubmissionRepository extends JpaRepository<Submission, Long> {
 
-     List<Submission> findByStudentId(Long studentId);
+     List<Submission> findByStudentIdAndAssignmentId(Long studentId, Long assignmentId);
+
+    List<Submission> findByStudentId(Long studentId);
 
     boolean existsByStudentAndAssignment(Student student, Assignment assignment);
 

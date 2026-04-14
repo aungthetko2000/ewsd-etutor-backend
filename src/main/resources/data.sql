@@ -25,6 +25,11 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_INDIVIDUAL_DOCUMENT', 'View all document', 'DOCUMENT'),
 ('SUBMIT_ASSIGNMENT', 'Submit all assignment', 'ASSIGNMENT'),
 ('VIEW_ALL_ASSIGNMENT', 'View all assignment', 'ASSIGNMENT'),
+('VIEW_ASSIGNMENT', 'View assignment', 'ASSIGNMENT'),
+('VIEW_ALL_FEEDBACKS', 'View all feedbacks', 'FEEDBACK'),
+('VIEW_EXCEPTION_REPORT', 'View exception report', 'REPORT'),
+('EDIT_COMMENT', 'Can edit own comment', 'COMMENT'),
+('DELETE_COMMENT', 'Can delete own comment', 'COMMENT');
 ('VIEW_ASSIGNMENT', 'View assignment', 'ASSIGNMENT');
 ('VIEW_ALL_COMMENT', 'Can see a comment on blogs', 'COMMENT'),
 ('CREATE_STUDENT', 'Can create student account', 'STUDENT');
@@ -43,7 +48,8 @@ WHERE r.name = 'STAFF'
   AND p.name IN (
     'VIEW_STAFF_DASHBOARD',
     'BULK_ALLOCATION',
-    'CREATE_STUDENT'
+    'CREATE_STUDENT',
+    'VIEW_EXCEPTION_REPORT'
   );
 
 -- STUDENT PERMISSIONS
@@ -68,7 +74,10 @@ WHERE r.name = 'STUDENT'
     'SUBMIT_DOCUMENT',
     'VIEW_INDIVIDUAL_DOCUMENT',
     'VIEW_ALL_ASSIGNMENT',
-    'VIEW_ASSIGNMENT'
+    'VIEW_ASSIGNMENT',
+    'VIEW_ALL_FEEDBACKS',
+    'EDIT_COMMENT',
+    'DELETE_COMMENT'
    );
 
 -- TUTOR PERMISSIONS
@@ -99,7 +108,10 @@ WHERE r.name = 'TUTOR'
     'VIEW_INDIVIDUAL_DOCUMENT',
     'SUBMIT_ASSIGNMENT',
     'VIEW_ALL_ASSIGNMENT',
-    'VIEW_ASSIGNMENT'
+    'VIEW_ASSIGNMENT',
+    'VIEW_ALL_FEEDBACKS',
+    'EDIT_COMMENT',
+    'DELETE_COMMENT'
   );
 
 -- ADMIN PERMISSIONS

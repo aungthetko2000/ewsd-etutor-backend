@@ -5,11 +5,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ewsd.assignment.Assignment;
+import org.ewsd.entity.comment.Comment;
 import org.ewsd.entity.student.Student;
 import org.ewsd.enumeration.SubmissionStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,8 +26,6 @@ public class Submission {
 
     private LocalDateTime uploadTimestamp;
 
-    private String filePath;
-
     private String fileName;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -37,5 +38,8 @@ public class Submission {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignment_id", nullable = false)
     private Assignment assignment;
+
+    @OneToMany(mappedBy = "submission", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 
 }

@@ -3,6 +3,7 @@ package org.ewsd.service.staff;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.allocation.TutorAllocationResponse;
+import org.ewsd.dto.student.StudentResponseDto;
 import org.ewsd.entity.student.Student;
 import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.repository.student.StudentRepository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,5 +55,33 @@ public class StaffServiceImpl implements StaffService {
         }
         studentRepository.saveAll(students);
         return responses;
+    }
+
+    @Override
+    public List<StudentResponseDto> getStudentsWithNoTutor() {
+        return studentRepository.findByTutorIsNull()
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    private StudentResponseDto mapToDto(Student student) {
+        return StudentResponseDto.builder()
+                .id(student.getId())
+                .fullName(student.getFullName())
+                .email(student.getUser().getEmail())
+                .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
+                .assigned(student.getTutor() != null)
+                .email(student.getUser().getEmail()) //NEW
+                .age(student.getAge())       // NEW
+                .session(student.getSession())   // NEW
+
+                //New fields added
+                .phone(student.getPhone())
+                .address(student.getAddress())
+                .status(student.getStatus())
+                .course(student.getCourse())
+                .registrationDate(student.getRegistrationDate())
+                .build();
     }
 }

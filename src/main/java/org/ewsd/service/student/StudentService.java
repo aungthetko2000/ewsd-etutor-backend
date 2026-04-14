@@ -135,7 +135,7 @@ public class StudentService {
         Student student = Student.builder()
                 .fullName(request.getFirstName() + " " + request.getLastName())
                 .age(request.getAge())
-                .grade(request.getGrade())
+                .session(request.getGrade())
                 .user(user)
                 .build();
 

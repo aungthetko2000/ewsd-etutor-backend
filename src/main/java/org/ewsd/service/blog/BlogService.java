@@ -18,4 +18,6 @@ public interface BlogService {
 
     List<BlogResponseDto> getMostFavoriteBlog();
 
+    List<BlogResponseDto> searchBlogs(String keyword);
+
 }
