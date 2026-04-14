@@ -46,63 +46,63 @@ public class DataSeeder implements CommandLineRunner {
                 .orElseThrow(()->new RuntimeException("Student role not found"));
 
 
-        List<User> userLists = List.of(
-                new User(null, "mgmg@example.com", passwordEncoder.encode("password")
-                , "Mg", "Mg", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
-                        new HashSet<>(), null, null, null, null, null),
-                new User(null, "aungaung@example.com", passwordEncoder.encode("password"),
-                        "Aung", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "kyaw@example.com", passwordEncoder.encode("password")
-                        , "Kyaw", "Kyaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
-                        new HashSet<>(), null, null, null, null, null),
-                new User(null, "hla@example.com", passwordEncoder.encode("password"),
-                        "Hla", "Hla", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "su@example.com", passwordEncoder.encode("password"),
-                "Su", "Su", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "moe@example.com", passwordEncoder.encode("password"),
-                "Moe", "Moe", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "zaw@example.com", passwordEncoder.encode("password"),
-                        "Zaw", "Zaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "ko@example.com", passwordEncoder.encode("password"),
-                        "Ko", "Ko", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null,null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "myoaung@example.com", passwordEncoder.encode("password"),
-                        "Myo", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null)
-        );
+//        List<User> userLists = List.of(
+//                new User(null, "mgmg@example.com", passwordEncoder.encode("password")
+//                , "Mg", "Mg", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
+//                        new HashSet<>(), null, null, null, null, null),
+//                new User(null, "aungaung@example.com", passwordEncoder.encode("password"),
+//                        "Aung", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
+//                        , new HashSet<>(), null, null, null, null, null),
+//                new User(null, "kyaw@example.com", passwordEncoder.encode("password")
+//                        , "Kyaw", "Kyaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
+//                        new HashSet<>(), null, null, null, null, null),
+//                new User(null, "hla@example.com", passwordEncoder.encode("password"),
+//                        "Hla", "Hla", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), null, null, Set.of(studentRole)
+//                        , new HashSet<>(), null, null, null, null, null),
+//                new User(null, "su@example.com", passwordEncoder.encode("password"),
+//                "Su", "Su", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
+//                        , new HashSet<>(), null, null, null, null, null),
+//                new User(null, "moe@example.com", passwordEncoder.encode("password"),
+//                "Moe", "Moe", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
+//                        , new HashSet<>(), null, null, null, null, null),
+//                new User(null, "zaw@example.com", passwordEncoder.encode("password"),
+//                        "Zaw", "Zaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
+//                        , new HashSet<>(), null, null, null, null, null),
+//                new User(null, "ko@example.com", passwordEncoder.encode("password"),
+//                        "Ko", "Ko", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null,null, Set.of(studentRole)
+//                        , new HashSet<>(), null, null, null, null, null),
+//                new User(null, "myoaung@example.com", passwordEncoder.encode("password"),
+//                        "Myo", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
+//                        , new HashSet<>(), null, null, null, null, null)
+//        );
 
-        List<User> savedUser = userRepository.saveAll(userLists);
+//        List<User> savedUser = userRepository.saveAll(userLists);
 
 
-        List<Tutor> tutors = tutorRepository.findAll();
-        Tutor firstTutor = tutors.get(0); // take first tutor
+//        List<Tutor> tutors = tutorRepository.findAll();
+//        Tutor firstTutor = tutors.get(0); // take first tutor
+//
+//        List<Student> studentList = new ArrayList<>();
+//
+//        for (int i = 0; i < savedUser.size(); i++) {
+//            User user = savedUser.get(i);
+//
+//            Student student = Student.builder()
+//                    .fullName(user.getFirstName() + " " + user.getLastName())
+//                    .age(23)
+//                    .session("Final Year")
+//                    .phone("09123456789")
+//                    .address("Yangon")
+//                    .status("ACTIVE")
+//                    .course("Computing")
+//                    .user(user)
+//                    .tutor(i == 0 ? null : firstTutor) // first student unassigned
+//                    .build();
+//
+//            studentList.add(student);
+//        }
 
-        List<Student> studentList = new ArrayList<>();
-
-        for (int i = 0; i < savedUser.size(); i++) {
-            User user = savedUser.get(i);
-
-            Student student = Student.builder()
-                    .fullName(user.getFirstName() + " " + user.getLastName())
-                    .age(23)
-                    .session("Final Year")
-                    .phone("09123456789")
-                    .address("Yangon")
-                    .status("ACTIVE")
-                    .course("Computing")
-                    .user(user)
-                    .tutor(i == 0 ? null : firstTutor) // first student unassigned
-                    .build();
-
-            studentList.add(student);
-        }
-
-        studentRepository.saveAll(studentList);
+//        studentRepository.saveAll(studentList);
 
         User staffUser = User.builder()
                 .email("staff@example.com")
@@ -147,25 +147,25 @@ public class DataSeeder implements CommandLineRunner {
                 .build();
 
         adminRepository.save(adminProfile);
-        User staffUser = User.builder()
-                .email("staff@example.com")
-                .password(passwordEncoder.encode("password123"))
-                .firstName("John")
-                .lastName("Staff")
-                .accountNonLocked(true)
-                .enabled(true)
-                .accountNonExpired(true)
-                .credentialsNonExpired(true)
-                .roles(Set.of(staffRole))
-                .customPermissions(new HashSet<>())
-                .build();
-
-        staffUser = userRepository.save(staffUser);
-        Staff staff = Staff.builder()
-                .fullName(staffUser.getFirstName() + staffUser.getLastName())
-                .user(staffUser)
-                .build();
-        staffRepository.save(staff);
+//        User staffUser = User.builder()
+//                .email("staff@example.com")
+//                .password(passwordEncoder.encode("password123"))
+//                .firstName("John")
+//                .lastName("Staff")
+//                .accountNonLocked(true)
+//                .enabled(true)
+//                .accountNonExpired(true)
+//                .credentialsNonExpired(true)
+//                .roles(Set.of(staffRole))
+//                .customPermissions(new HashSet<>())
+//                .build();
+//
+//        staffUser = userRepository.save(staffUser);
+//        Staff staff = Staff.builder()
+//                .fullName(staffUser.getFirstName() + staffUser.getLastName())
+//                .user(staffUser)
+//                .build();
+//        staffRepository.save(staff);
 
         //deleted test students data
     }

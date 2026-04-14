@@ -30,9 +30,6 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_EXCEPTION_REPORT', 'View exception report', 'REPORT'),
 ('EDIT_COMMENT', 'Can edit own comment', 'COMMENT'),
 ('DELETE_COMMENT', 'Can delete own comment', 'COMMENT');
-('VIEW_ASSIGNMENT', 'View assignment', 'ASSIGNMENT');
-('VIEW_ALL_COMMENT', 'Can see a comment on blogs', 'COMMENT'),
-('CREATE_STUDENT', 'Can create student account', 'STUDENT');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),

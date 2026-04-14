@@ -28,6 +28,7 @@ public class StudentService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public List<StudentResponseDto> getStudents(Boolean unassignedOnly) {
 
@@ -73,33 +74,6 @@ public class StudentService {
 
     public StudentResponseDto registerStudent(StudentRegisterRequest request) {
 
-        Role studentRole = roleRepository.findByName("STUDENT")
-                .orElseThrow(() -> new RuntimeException("Student role not found"));
-
-        User user = User.builder()
-                .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
-                .firstName(request.getFirstName())
-                .lastName(request.getLastName())
-                .enabled(true)
-                .accountNonLocked(true)
-                .accountNonExpired(true)
-                .credentialsNonExpired(true)
-                .roles(Set.of(studentRole))
-                .customPermissions(new HashSet<>())
-                .grade(student.getGrade())   // NEW
-                .eduEmail(student.getEduEmail())          // fake edu email
-                .email(student.getUser().getEmail())     // real login email
-                .build();
-    }
-
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
-    private final PasswordEncoder passwordEncoder;
-    private final EmailService emailService;
-
-    public StudentResponseDto registerStudent(StudentRegisterRequest request) {
-
         // 1. Check duplicate email
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
@@ -115,7 +89,7 @@ public class StudentService {
         // 4. Create user
         User user = User.builder()
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(rawPassword)) // 🔥 encode generated password
+                .password(passwordEncoder.encode(rawPassword)) // encode generated password
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .enabled(true)
@@ -136,22 +110,6 @@ public class StudentService {
                 .fullName(request.getFirstName() + " " + request.getLastName())
                 .age(request.getAge())
                 .session(request.getGrade())
-                .user(user)
-                .build();
-
-        studentRepository.save(student);
-
-        return mapToDto(student);
-    }
-
-        user = userRepository.save(user);
-
-        // 5. Create student
-        Student student = Student.builder()
-                .eduEmail(request.getEduEmail())
-                .fullName(request.getFirstName() + " " + request.getLastName())
-                .age(request.getAge())
-                .grade(request.getGrade())
                 .user(user)
                 .build();
 
@@ -178,4 +136,6 @@ public class StudentService {
 
         return password.toString();
     }
+
 }
+
