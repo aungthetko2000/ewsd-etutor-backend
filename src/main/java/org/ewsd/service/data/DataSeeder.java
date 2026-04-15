@@ -45,53 +45,38 @@ public class DataSeeder implements CommandLineRunner {
         Role studentRole = roleRepository.findByName("STUDENT")
                 .orElseThrow(()->new RuntimeException("Student role not found"));
 
-        LocalDateTime now = LocalDateTime.now();
+        for (int i = 1; i <= 10; i++) {
 
-        List<User> users = List.of(
-                User.builder()
-                        .email("mgmg@example.com")
-                        .password(passwordEncoder.encode("password"))
-                        .firstName("Mg")
-                        .lastName("Mg")
-                        .createdAt(now)
-                        .updatedAt(now)
-                        .roles(Set.of(studentRole))
-                        .build()
-        );
+            String email = "dev.aungthetko+student" + i + "@gmail.com";
 
-        List<User> savedUsers = userRepository.saveAll(users);
-
-        List<Tutor> tutors = tutorRepository.findAll();
-        Tutor firstTutor = tutors.isEmpty() ? null : tutors.get(0);
-
-        List<Student> studentList = new ArrayList<>();
-
-        for (int i = 0; i < savedUsers.size(); i++) {
-
-            User user = savedUsers.get(i);
-
-            Student student = Student.builder()
-                    .fullName(user.getFirstName() + " " + user.getLastName())
-                    .age(23)
-                    .grade("Final Year")
-                    .eduEmail(user.getFirstName().toLowerCase() + "@university.edu")
-                    .email(user.getEmail())
-                    .session("Morning")
-                    .registrationDate(now)
-                    .phone("09123456789")
-                    .address("Yangon")
-                    .status("ACTIVE")
-                    .course("Computing")
-                    .user(user)
-                    .tutor(i == 0 ? null : firstTutor) // first student unassigned
+            User studentUser = User.builder()
+                    .email(email)
+                    .password(passwordEncoder.encode("password123"))
+                    .firstName("Student")
+                    .lastName(String.valueOf(i))
+                    .accountNonLocked(true)
+                    .enabled(true)
+                    .accountNonExpired(true)
+                    .credentialsNonExpired(true)
+                    .roles(Set.of(studentRole))
+                    .customPermissions(new HashSet<>())
                     .build();
 
-            user.setStudent(student);
+            studentUser = userRepository.save(studentUser);
 
-            studentList.add(student);
+            Student student = Student.builder()
+                    .user(studentUser)
+                    .fullName(studentUser.getFirstName() + " " + studentUser.getLastName())
+                    .age(18 + (i % 5)) // random age 18-22
+                    .session("UOG-23")
+                    .registrationDate(LocalDateTime.now())
+                    .phone("0979518272" + i)
+                    .address("Yangon")
+                    .course("Diploma In Information")
+                    .build();
+
+            studentRepository.save(student);
         }
-
-        studentRepository.saveAll(studentList);
 
         User staffUser = User.builder()
                 .email("staff@example.com")

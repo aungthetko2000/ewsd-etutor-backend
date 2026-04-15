@@ -66,7 +66,6 @@ public class StudentService {
                 //New fields added
                 .phone(student.getPhone())
                 .address(student.getAddress())
-                .status(student.getStatus())
                 .course(student.getCourse())
                 .registrationDate(student.getRegistrationDate())
                 .build();

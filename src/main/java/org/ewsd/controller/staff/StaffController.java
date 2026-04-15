@@ -44,4 +44,12 @@ public class StaffController {
         ApiResponse<List<TutorAllocationResponse>> response = ApiResponse.bulkSuccess(allocationResponses, "Students retrieved successfully");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @GetMapping("/students/inactive")
+    @PreAuthorize("hasRole('STAFF') AND hasAuthority('VIEW_EXCEPTION_REPORT')")
+    public ResponseEntity<ApiResponse<List<StudentResponseDto>>> getInactiveStudents(@RequestParam("days") Integer days) {
+        List<StudentResponseDto> allocationResponses = staffService.getInactiveStudentsReport(days);
+        ApiResponse<List<StudentResponseDto>> response = ApiResponse.bulkSuccess(allocationResponses, "Inactive students retrieved successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

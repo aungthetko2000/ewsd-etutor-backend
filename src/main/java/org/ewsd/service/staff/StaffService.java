@@ -13,4 +13,6 @@ public interface StaffService {
 
     List<TutorAllocationResponse> getAllAllocations();
 
+    List<StudentResponseDto> getInactiveStudentsReport(Integer days);
+
 }

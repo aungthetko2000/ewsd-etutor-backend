@@ -11,6 +11,7 @@ import org.ewsd.repository.tutor.TutorRepository;
 import org.ewsd.service.email.EmailService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,7 +96,7 @@ public class StaffServiceImpl implements StaffService {
         List<Student> students = studentRepository.findAll();
 
         return students.stream()
-                .filter(student -> student.getTutor() != null) // only allocated
+                .filter(student -> student.getTutor() != null)
                 .map(student -> TutorAllocationResponse.builder()
                         .studentId(student.getId())
                         .studentName(student.getUser().getFirstName() + " " + student.getUser().getLastName())
@@ -107,6 +108,14 @@ public class StaffServiceImpl implements StaffService {
                 .toList();
     }
 
+    @Override
+    public List<StudentResponseDto> getInactiveStudentsReport(Integer days) {
+        LocalDateTime dateTime = LocalDateTime.now().minusDays(days);
+        return studentRepository.findInactiveStudents(dateTime).stream()
+                .map(this::mapToDto)
+                .toList();
+    }
+
     private StudentResponseDto mapToDto(Student student) {
         return StudentResponseDto.builder()
                 .id(student.getId())
@@ -114,14 +123,11 @@ public class StaffServiceImpl implements StaffService {
                 .email(student.getUser().getEmail())
                 .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
                 .assigned(student.getTutor() != null)
-                .email(student.getUser().getEmail()) //NEW
-                .age(student.getAge())       // NEW
-                .session(student.getSession())   // NEW
-
-                //New fields added
+                .email(student.getUser().getEmail())
+                .age(student.getAge())
+                .session(student.getSession())
                 .phone(student.getPhone())
                 .address(student.getAddress())
-                .status(student.getStatus())
                 .course(student.getCourse())
                 .registrationDate(student.getRegistrationDate())
                 .build();

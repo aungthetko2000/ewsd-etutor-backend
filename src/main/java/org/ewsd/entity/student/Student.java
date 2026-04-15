@@ -25,14 +25,10 @@ public class Student {
     private Long id;
     private String fullName;
     private Integer age;
-    private String grade;
-    private String eduEmail;
-    private String email;
     private String session;
     private LocalDateTime registrationDate;
     private String phone;
     private String address;
-    private String status;
     private String course;
 
     @OneToOne
