@@ -45,52 +45,39 @@ public class DataSeeder implements CommandLineRunner {
         Role studentRole = roleRepository.findByName("STUDENT")
                 .orElseThrow(()->new RuntimeException("Student role not found"));
 
+        LocalDateTime now = LocalDateTime.now();
 
-        List<User> userLists = List.of(
-                new User(null, "mgmg@example.com", passwordEncoder.encode("password")
-                , "Mg", "Mg", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
-                        new HashSet<>(), null, null, null, null, null),
-                new User(null, "dev.aungthetko@gmail.com", passwordEncoder.encode("password"),
-                        "Aung", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "aungthetko.cue.mm@gmail.com", passwordEncoder.encode("password")
-                        , "Kyaw", "Kyaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
-                        new HashSet<>(), null, null, null, null, null),
-                new User(null, "hla@example.com", passwordEncoder.encode("password"),
-                        "Hla", "Hla", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "su@example.com", passwordEncoder.encode("password"),
-                "Su", "Su", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "moe@example.com", passwordEncoder.encode("password"),
-                "Moe", "Moe", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "zaw@example.com", passwordEncoder.encode("password"),
-                        "Zaw", "Zaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "ko@example.com", passwordEncoder.encode("password"),
-                        "Ko", "Ko", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null,null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "myoaung@example.com", passwordEncoder.encode("password"),
-                        "Myo", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null)
+        List<User> users = List.of(
+                User.builder()
+                        .email("mgmg@example.com")
+                        .password(passwordEncoder.encode("password"))
+                        .firstName("Mg")
+                        .lastName("Mg")
+                        .createdAt(now)
+                        .updatedAt(now)
+                        .roles(Set.of(studentRole))
+                        .build()
         );
 
-        List<User> savedUser = userRepository.saveAll(userLists);
-
+        List<User> savedUsers = userRepository.saveAll(users);
 
         List<Tutor> tutors = tutorRepository.findAll();
-        Tutor firstTutor = tutors.get(0); // take first tutor
+        Tutor firstTutor = tutors.isEmpty() ? null : tutors.get(0);
 
         List<Student> studentList = new ArrayList<>();
 
-        for (int i = 0; i < savedUser.size(); i++) {
-            User user = savedUser.get(i);
+        for (int i = 0; i < savedUsers.size(); i++) {
+
+            User user = savedUsers.get(i);
 
             Student student = Student.builder()
                     .fullName(user.getFirstName() + " " + user.getLastName())
                     .age(23)
-                    .session("Final Year")
+                    .grade("Final Year")
+                    .eduEmail(user.getFirstName().toLowerCase() + "@university.edu")
+                    .email(user.getEmail())
+                    .session("Morning")
+                    .registrationDate(now)
                     .phone("09123456789")
                     .address("Yangon")
                     .status("ACTIVE")
@@ -98,6 +85,8 @@ public class DataSeeder implements CommandLineRunner {
                     .user(user)
                     .tutor(i == 0 ? null : firstTutor) // first student unassigned
                     .build();
+
+            user.setStudent(student);
 
             studentList.add(student);
         }

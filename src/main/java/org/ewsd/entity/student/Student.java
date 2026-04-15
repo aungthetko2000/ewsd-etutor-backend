@@ -22,7 +22,6 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
     private String fullName;
     private Integer age;
@@ -30,11 +29,11 @@ public class Student {
     private String eduEmail;
     private String email;
     private String session;
-    private LocalDateTime registrationDate;  //new field
-    private String phone;  //new field
-    private String address; //new field
-    private String status; // ACTIVE, INACTIVE
-    private String course; //new field
+    private LocalDateTime registrationDate;
+    private String phone;
+    private String address;
+    private String status;
+    private String course;
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false, unique = true)

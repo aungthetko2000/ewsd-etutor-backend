@@ -29,7 +29,6 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_ALL_FEEDBACKS', 'View all feedbacks', 'FEEDBACK'),
 ('VIEW_EXCEPTION_REPORT', 'View exception report', 'REPORT'),
 ('GET_ALLOCATION_LIST', 'View allocation list', 'ALLOCATE'),
-('VIEW_EXCEPTION_REPORT', 'View exception report', 'REPORT'),
 ('EDIT_COMMENT', 'Can edit own comment', 'COMMENT'),
 ('DELETE_COMMENT', 'Can delete own comment', 'COMMENT');
 

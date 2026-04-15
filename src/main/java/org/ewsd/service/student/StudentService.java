@@ -115,13 +115,6 @@ public class StudentService {
 
         studentRepository.save(student);
 
-        // 6. Send email (IMPORTANT)
-        emailService.sendHTMLMail(
-                request.getEmail(),
-                request.getEduEmail(), // student login email
-                rawPassword
-        );
-
         return mapToDto(student);
     }
 
