@@ -3,6 +3,8 @@ package org.ewsd.service.email;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ewsd.entity.student.Student;
+import org.ewsd.entity.tutor.Tutor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -31,6 +33,28 @@ public class EmailService {
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
             log.error("Error sending HTML mail: ", e);
+        }
+    }
+
+    @Async
+    public void sendReallocationMailToStudent(Student student, Tutor tutor) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(student.getUser().getEmail());
+            helper.setSubject("Tutor Reallocation Notice");
+
+            helper.setText("""
+            <h2>Hello %s</h2>
+            <p>Your tutor has been updated.</p>
+            <p><b>New Tutor:</b> %s</p>
+            """.formatted(student.getFullName(), tutor.getFullName()), true);
+
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            log.error("Student mail failed", e);
         }
     }
 

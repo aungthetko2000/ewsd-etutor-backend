@@ -50,10 +50,10 @@ public class DataSeeder implements CommandLineRunner {
                 new User(null, "mgmg@example.com", passwordEncoder.encode("password")
                 , "Mg", "Mg", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
                         new HashSet<>(), null, null, null, null, null),
-                new User(null, "aungaung@example.com", passwordEncoder.encode("password"),
+                new User(null, "dev.aungthetko@gmail.com", passwordEncoder.encode("password"),
                         "Aung", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
                         , new HashSet<>(), null, null, null, null, null),
-                new User(null, "kyaw@example.com", passwordEncoder.encode("password")
+                new User(null, "aungthetko.cue.mm@gmail.com", passwordEncoder.encode("password")
                         , "Kyaw", "Kyaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
                         new HashSet<>(), null, null, null, null, null),
                 new User(null, "hla@example.com", passwordEncoder.encode("password"),

@@ -11,4 +11,6 @@ public interface StaffService {
 
     List<StudentResponseDto> getStudentsWithNoTutor();
 
+    List<TutorAllocationResponse> getAllAllocations();
+
 }

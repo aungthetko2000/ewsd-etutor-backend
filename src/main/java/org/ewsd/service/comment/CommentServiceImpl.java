@@ -9,11 +9,13 @@ import org.ewsd.entity.blog.Blog;
 import org.ewsd.entity.student.Student;
 import org.ewsd.entity.submission.Submission;
 import org.ewsd.entity.user.User;
+import org.ewsd.enumeration.NotificationType;
 import org.ewsd.repository.comment.CommentRepository;
 import org.ewsd.repository.blog.BlogRepository;
 import org.ewsd.repository.submission.SubmissionRepository;
 import org.ewsd.repository.user.UserRepository;
 import org.ewsd.service.comment.CommentService;
+import org.ewsd.service.notification.NotificationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +31,7 @@ public class CommentServiceImpl implements CommentService {
     private final BlogRepository blogRepository;
     private final UserRepository userRepository;
     private final SubmissionRepository submissionRepository;
+    private final NotificationService notificationService;
 
     @Override
     @Transactional
@@ -64,7 +67,18 @@ public class CommentServiceImpl implements CommentService {
                 .submission(submission)
                 .build();
 
-        return mapToDto(commentRepository.save(comment));
+        Comment savedComment = commentRepository.save(comment);
+
+        if (submission != null) {
+            notificationService.sendAndSaveComment(
+                    submission.getStudent().getUser(),
+                    savedComment,
+                    NotificationType.COMMENT,
+                    "Someone commented on your submission"
+            );
+        }
+
+        return mapToDto(savedComment);
     }
 
     @Override

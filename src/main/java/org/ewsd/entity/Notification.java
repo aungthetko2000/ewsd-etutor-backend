@@ -2,6 +2,7 @@ package org.ewsd.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.ewsd.entity.comment.Comment;
 import org.ewsd.entity.meeting.Meeting;
 import org.ewsd.entity.user.User;
 import org.ewsd.enumeration.NotificationStatus;
@@ -38,7 +39,7 @@ public class Notification {
     @Column(name = "is_read", nullable = false)
     private boolean read = false;
 
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDate scheduledAt;
 
     @Enumerated(EnumType.STRING)
@@ -49,4 +50,8 @@ public class Notification {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "meeting_id")
     private Meeting meeting;
+
+    @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 }

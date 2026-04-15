@@ -27,7 +27,8 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_ALL_ASSIGNMENT', 'View all assignment', 'ASSIGNMENT'),
 ('VIEW_ASSIGNMENT', 'View assignment', 'ASSIGNMENT'),
 ('VIEW_ALL_FEEDBACKS', 'View all feedbacks', 'FEEDBACK'),
-('VIEW_EXCEPTION_REPORT', 'View exception report', 'REPORT');
+('VIEW_EXCEPTION_REPORT', 'View exception report', 'REPORT'),
+('GET_ALLOCATION_LIST', 'View allocation list', 'ALLOCATE');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
@@ -44,7 +45,8 @@ WHERE r.name = 'STAFF'
     'VIEW_STAFF_DASHBOARD',
     'BULK_ALLOCATION',
     'CREATE_STUDENT',
-    'VIEW_EXCEPTION_REPORT'
+    'VIEW_EXCEPTION_REPORT',
+    'GET_ALLOCATION_LIST'
   );
 
 -- STUDENT PERMISSIONS

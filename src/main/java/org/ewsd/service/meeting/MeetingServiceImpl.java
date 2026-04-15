@@ -85,7 +85,7 @@ public class MeetingServiceImpl implements MeetingService {
             notificationService.sendAndSave(
                     studentUser,
                     savedMeeting,
-                    NotificationType.MEETING_SCHEDULED,
+                    NotificationType.MEETING,
                     message
             );
         });
@@ -128,7 +128,7 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     @Transactional
     public void updateMeetingStatus(Long id, MeetingConfirmationRequest request) {
-        Meeting meeting = meetingRepository.findById(id)
+        Meeting meeting = meetingRepository.findById(10L)
                 .orElseThrow(() -> new IllegalArgumentException("Meeting was not found"));
 
         if (request.getMeetingStatus() == MeetingStatus.PENDING) {

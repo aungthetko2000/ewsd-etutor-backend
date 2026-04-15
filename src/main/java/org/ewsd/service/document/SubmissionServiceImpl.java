@@ -79,8 +79,7 @@ public class SubmissionServiceImpl implements SubmissionService {
 
     @Override
     public List<SubmissionResponseDto> getAllDocumentsId(Long studentId) {
-        User user = userRepository.findById(studentId).orElseThrow(() ->  new IllegalArgumentException("User was not found"));
-        return submissionRepository.findByStudentId(user.getStudent().getId())
+        return submissionRepository.findByStudentId(studentId)
                 .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());

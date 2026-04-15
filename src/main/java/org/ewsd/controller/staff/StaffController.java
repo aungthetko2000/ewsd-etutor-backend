@@ -36,4 +36,12 @@ public class StaffController {
         ApiResponse<List<StudentResponseDto>> response = ApiResponse.bulkSuccess(allocationResponses, "Students retrieved successfully");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @GetMapping("/allocations")
+    @PreAuthorize("hasRole('STAFF') AND hasAuthority('GET_ALLOCATION_LIST')")
+    public ResponseEntity<ApiResponse<List<TutorAllocationResponse>>> getAllAllocations() {
+        List<TutorAllocationResponse> allocationResponses = staffService.getAllAllocations();
+        ApiResponse<List<TutorAllocationResponse>> response = ApiResponse.bulkSuccess(allocationResponses, "Students retrieved successfully");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 }

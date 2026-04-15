@@ -3,6 +3,7 @@ package org.ewsd.service.notification.impl;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.notification.NotificationResponseDto;
 import org.ewsd.entity.Notification;
+import org.ewsd.entity.comment.Comment;
 import org.ewsd.entity.meeting.Meeting;
 import org.ewsd.entity.user.User;
 import org.ewsd.enumeration.NotificationStatus;
@@ -60,11 +61,47 @@ public class NotificationServiceImpl implements NotificationService {
         n.setRead(true);
     }
 
+    @Override
+    public void sendAndSaveComment(User recipient, Comment comment, NotificationType type, String message) {
+        Notification notification = Notification.builder()
+                .recipient(recipient)
+                .comment(comment)
+                .type(type)
+                .message(message)
+                .status(NotificationStatus.UNREAD)
+                .read(false)
+                .build();
+
+        Notification saved = notificationRepository.save(notification);
+        NotificationResponseDto dto = mapToDto(saved);
+
+        messagingTemplate.convertAndSendToUser(
+                recipient.getEmail(),
+                "/queue/notifications",
+                dto
+        );
+    }
+
     public NotificationResponseDto mapToDto(Notification notification) {
+
+        String senderEmail = null;
+        String senderName = null;
+
+        if (notification.getMeeting() != null) {
+            senderEmail = notification.getMeeting().getTutor().getUser().getEmail();
+            senderName = notification.getMeeting().getTutor().getFullName();
+        }
+
+        if (notification.getComment() != null) {
+            String fullName = notification.getComment().getUser().getFirstName() + " " + notification.getComment().getUser().getLastName();
+            senderEmail = notification.getComment().getUser().getEmail();
+            senderName = fullName;
+        }
+
         return NotificationResponseDto.builder()
                 .id(notification.getId())
-                .senderEmail(notification.getMeeting().getTutor().getUser().getEmail())
-                .senderName(notification.getMeeting().getTutor().getFullName())
+                .senderEmail(senderEmail)
+                .senderName(senderName)
                 .detailMessage(notification.getMessage())
                 .type(notification.getType())
                 .read(notification.isRead())
