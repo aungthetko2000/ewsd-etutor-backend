@@ -68,4 +68,12 @@ public class BlogController {
         ApiResponse<Integer> response = ApiResponse.success(favoriteCount, "You liked this blog");
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @GetMapping("/search")
+    @PreAuthorize("hasAuthority('VIEW_BLOG_LIST')")
+    public ResponseEntity<ApiResponse<List<BlogResponseDto>>> searchBlogs(@RequestParam String keyword) {
+        List<BlogResponseDto> results = blogService.searchBlogs(keyword);
+        ApiResponse<List<BlogResponseDto>> response = ApiResponse.success(results, "Search results retrieved");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

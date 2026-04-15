@@ -8,6 +8,7 @@ import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
 
 import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,9 @@ public class Student {
     private Long id;
     private String fullName;
     private Integer age;
+    private String grade;
+    private String eduEmail;
+    private String email;
     private String session;
     private LocalDateTime registrationDate;  //new field
     private String phone;  //new field

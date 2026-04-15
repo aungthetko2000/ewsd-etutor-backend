@@ -9,6 +9,9 @@ import org.ewsd.entity.user.User;
 import org.ewsd.repository.role.RoleRepository;
 import org.ewsd.repository.student.StudentRepository;
 import org.ewsd.repository.user.UserRepository;
+import org.ewsd.service.email.EmailService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.ewsd.repository.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,7 @@ public class StudentService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public List<StudentResponseDto> getStudents(Boolean unassignedOnly) {
 
@@ -68,36 +72,70 @@ public class StudentService {
                 .build();
     }
 
-//    public StudentResponseDto registerStudent(StudentRegisterRequest request) {
-//
-//        Role studentRole = roleRepository.findByName("STUDENT")
-//                .orElseThrow(() -> new RuntimeException("Student role not found"));
-//
-//        User user = User.builder()
-//                .email(request.getEmail())
-//                .password(passwordEncoder.encode(request.getPassword()))
-//                .firstName(request.getFirstName())
-//                .lastName(request.getLastName())
-//                .enabled(true)
-//                .accountNonLocked(true)
-//                .accountNonExpired(true)
-//                .credentialsNonExpired(true)
-//                .roles(Set.of(studentRole))
-//                .customPermissions(new HashSet<>())
-//                .build();
-//
-//        user = userRepository.save(user);
-//
-//        Student student = Student.builder()
-//                .fullName(request.getFirstName() + " " + request.getLastName())
-//                .age(request.getAge())
-//                .grade(request.getGrade())
-//                .user(user)
-//                .build();
-//
-//        studentRepository.save(student);
-//
-//        return mapToDto(student);
-//    }
+    public StudentResponseDto registerStudent(StudentRegisterRequest request) {
+
+        // 1. Check duplicate email
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        // 2. Generate password
+        String rawPassword = generateRandomPassword();
+
+        // 3. Get role
+        Role studentRole = roleRepository.findByName("STUDENT")
+                .orElseThrow(() -> new RuntimeException("Student role not found"));
+
+        // 4. Create user
+        User user = User.builder()
+                .email(request.getEmail())
+                .password(passwordEncoder.encode(rawPassword)) // encode generated password
+                .firstName(request.getFirstName())
+                .lastName(request.getLastName())
+                .enabled(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .roles(Set.of(studentRole))
+                .customPermissions(new HashSet<>())
+                .build();
+
+        if (userRepository.existsByEmail(request.getEduEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        user = userRepository.save(user);
+
+        Student student = Student.builder()
+                .fullName(request.getFirstName() + " " + request.getLastName())
+                .age(request.getAge())
+                .session(request.getGrade())
+                .user(user)
+                .build();
+
+        studentRepository.save(student);
+
+        // 6. Send email (IMPORTANT)
+        emailService.sendHTMLMail(
+                request.getEmail(),
+                request.getEduEmail(), // student login email
+                rawPassword
+        );
+
+        return mapToDto(student);
+    }
+
+    private String generateRandomPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#";
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < 8; i++) {
+            int index = (int) (Math.random() * chars.length());
+            password.append(chars.charAt(index));
+        }
+
+        return password.toString();
+    }
 
 }
+

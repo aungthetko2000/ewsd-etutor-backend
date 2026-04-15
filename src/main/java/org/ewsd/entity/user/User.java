@@ -145,4 +145,7 @@ public class User implements UserDetails {
         permissions.addAll(customPermissions);
         return permissions;
     }
+
+    @Column(name = "last_login_at")
+    private LocalDateTime lastLoginAt;
 }
