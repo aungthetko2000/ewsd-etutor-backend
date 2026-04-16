@@ -9,6 +9,7 @@ import org.ewsd.service.tutor.TutorService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,31 +23,19 @@ public class TutorController {
     private final TutorService tutorService;
 
     @GetMapping("/fetchAllTutors")
-    @PreAuthorize("hasRole('STAFF') AND hasAuthority('BULK_ALLOCATION')")
+    @PreAuthorize("(hasRole('STAFF') OR hasRole('AUTHORIZE_STAFF')) AND hasAuthority('BULK_ALLOCATION')")
     public ResponseEntity<ApiResponse<List<TutorResponse>>> fetchAllTutors() {
         List<TutorResponse> tutorResponse = tutorService.getAllTutors();
-        ApiResponse<List<TutorResponse>> response = ApiResponse.success(tutorResponse,
-                "Retrieve all tutors successfully");
+        ApiResponse<List<TutorResponse>> response = ApiResponse.success(tutorResponse, "Retrieve all tutors successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/assigned-students/{tutorId}")
+    @GetMapping("/assigned-students")
     @PreAuthorize("hasRole('TUTOR') AND hasAuthority('VIEW_ASSIGNED_STUDENTS')")
-    public ResponseEntity<ApiResponse<List<StudentResponseDto>>> getAssignedStudents(
-            @PathVariable Long tutorId,
-            @AuthenticationPrincipal User user) {
-
-        Long realTutorId = tutorService.getTutorIdByUser(user);
-
-        if (!realTutorId.equals(tutorId)) {
-            throw new RuntimeException("Unauthorized");
-        }
-
-        List<StudentResponseDto> students = tutorService.getAssignedStudents(realTutorId);
-
-        ApiResponse<List<StudentResponseDto>> response =
-                ApiResponse.success(students, "Assigned students retrieved successfully");
-
-        return ResponseEntity.ok(response);
+    public ResponseEntity<ApiResponse<List<StudentResponseDto>>> getAssignedStudents(Authentication authentication) {
+        String email = authentication.getName();
+        List<StudentResponseDto> students = tutorService.getAssignedStudents(email);
+        ApiResponse<List<StudentResponseDto>> response = ApiResponse.success(students, "Assigned students retrieved successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

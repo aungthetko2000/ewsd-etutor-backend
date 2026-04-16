@@ -30,12 +30,14 @@ INSERT INTO permissions (name, description, category) VALUES
 ('VIEW_EXCEPTION_REPORT', 'View exception report', 'REPORT'),
 ('GET_ALLOCATION_LIST', 'View allocation list', 'ALLOCATE'),
 ('EDIT_COMMENT', 'Can edit own comment', 'COMMENT'),
-('DELETE_COMMENT', 'Can delete own comment', 'COMMENT');
+('DELETE_COMMENT', 'Can delete own comment', 'COMMENT'),
+('VIEW_STATISTICS_REPORT', 'View statistics report', 'REPORT');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
 ('TUTOR', 'Tutor role'),
 ('STAFF', 'Staff/Admin role'),
+('AUTHORIZE_STAFF', 'Staff/Super Admin role'),
 ('ADMIN', 'System Administrator role');
 
 -- STAFF PERMISSIONS
@@ -49,6 +51,20 @@ WHERE r.name = 'STAFF'
     'CREATE_STUDENT',
     'VIEW_EXCEPTION_REPORT',
     'GET_ALLOCATION_LIST'
+  );
+
+-- AUTHORIZE STAFF PERMISSIONS
+INSERT INTO role_permissions (role_id, permission_id)
+SELECT r.id, p.id
+FROM roles r, permissions p
+WHERE r.name = 'AUTHORIZE_STAFF'
+  AND p.name IN (
+    'VIEW_STAFF_DASHBOARD',
+    'BULK_ALLOCATION',
+    'CREATE_STUDENT',
+    'VIEW_EXCEPTION_REPORT',
+    'GET_ALLOCATION_LIST',
+    'VIEW_STATISTICS_REPORT'
   );
 
 -- STUDENT PERMISSIONS

@@ -35,15 +35,18 @@ public class DataSeeder implements CommandLineRunner {
     private final StaffRepository staffRepository;
     private final StudentRepository studentRepository;
     private final AdminRepository adminRepository;
-    private final TutorRepository tutorRepository;
 
     @Override
     public void run(String... args) throws Exception {
+
         Role staffRole = roleRepository.findByName("STAFF")
-                .orElseThrow(() -> new RuntimeException("STUDENT role not found! Run data.sql first."));
+                .orElseThrow(() -> new RuntimeException("STAFF role not found! Run data.sql first."));
+
+        Role superStaffRole = roleRepository.findByName("AUTHORIZE_STAFF")
+                .orElseThrow(() -> new RuntimeException("AUTHORIZE_STAFF role not found! Run data.sql first."));
 
         Role studentRole = roleRepository.findByName("STUDENT")
-                .orElseThrow(()->new RuntimeException("Student role not found"));
+                .orElseThrow(()->new RuntimeException("Student role not found! Run data.sql first."));
 
         for (int i = 1; i <= 10; i++) {
 
@@ -97,6 +100,25 @@ public class DataSeeder implements CommandLineRunner {
                 .user(staffUser)
                 .build();
         staffRepository.save(staff);
+
+        User autorizeStaff = User.builder()
+                .email("superstaff@example.com")
+                .password(passwordEncoder.encode("password123"))
+                .firstName("Super")
+                .lastName("Staff")
+                .accountNonLocked(true)
+                .enabled(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .roles(Set.of(superStaffRole))
+                .customPermissions(new HashSet<>())
+                .build();
+        autorizeStaff = userRepository.save(autorizeStaff);
+        Staff superStaff = Staff.builder()
+                .fullName(autorizeStaff.getFirstName() + autorizeStaff.getLastName())
+                .user(autorizeStaff)
+                .build();
+        staffRepository.save(superStaff);
 
         Role adminRole = roleRepository.findByName("ADMIN")
                 .orElseThrow(() -> new RuntimeException("Error: Role ADMIN is not found."));

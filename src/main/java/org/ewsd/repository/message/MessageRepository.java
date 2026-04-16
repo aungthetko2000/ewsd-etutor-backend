@@ -56,4 +56,21 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
     """)
     List<Message> findLatestConversations(@Param("userId") Long userId);
 
+    @Query("""
+        SELECT COUNT(m)
+        FROM Message m
+        WHERE m.sender.tutor IS NOT NULL
+    """)
+    long countMessagesSentByTutors();
+
+    @Query(value = """
+        SELECT DATE(timestamp) as messageDate,
+               COUNT(*) as totalCount
+        FROM messages
+        WHERE timestamp >= CURRENT_DATE - INTERVAL 6 DAY
+        GROUP BY DATE(timestamp)
+        ORDER BY messageDate
+    """, nativeQuery = true)
+    List<Object[]> getMessageCountsLast7Days();
+
 }

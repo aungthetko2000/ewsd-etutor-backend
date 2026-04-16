@@ -9,6 +9,7 @@ import java.util.List;
 public interface TutorService {
 
     List<TutorResponse> getAllTutors();
-    List<StudentResponseDto> getAssignedStudents(Long tutorId);
-    Long getTutorIdByUser(User user);
+
+    List<StudentResponseDto> getAssignedStudents(String email);
+
 }

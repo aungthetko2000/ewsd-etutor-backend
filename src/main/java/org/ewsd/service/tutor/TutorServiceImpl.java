@@ -6,6 +6,7 @@ import org.ewsd.dto.tutor.TutorResponse;
 import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
 import org.ewsd.repository.tutor.TutorRepository;
+import org.ewsd.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import org.ewsd.repository.student.StudentRepository;
@@ -16,6 +17,7 @@ public class TutorServiceImpl implements TutorService {
 
     private final TutorRepository tutorRepository;
     private final StudentRepository studentRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<TutorResponse> getAllTutors() {
@@ -30,17 +32,12 @@ public class TutorServiceImpl implements TutorService {
     }
 
     @Override
-    public Long getTutorIdByUser(User user) {
-        Tutor tutor = tutorRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new RuntimeException("Tutor not found"));
+    public List<StudentResponseDto> getAssignedStudents(String email) {
 
-        return tutor.getId();
-    }
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Tutor was not found"));
 
-    @Override
-    public List<StudentResponseDto> getAssignedStudents(Long tutorId) {
-
-        return studentRepository.findByTutorId(tutorId)
+        return studentRepository.findByTutorId(user.getTutor().getId())
                 .stream()
                 .map(student -> StudentResponseDto.builder()
                         .id(student.getId())
