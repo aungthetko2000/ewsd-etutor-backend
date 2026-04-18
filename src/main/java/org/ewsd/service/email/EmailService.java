@@ -110,7 +110,74 @@ public class EmailService {
         } catch (Exception e) {
             log.error("Tutor mail failed", e);
         }
+    }
 
+    @Async
+    public void sendInactivityEmail(String studentEmail, String studentName) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(studentEmail);
+            helper.setSubject("Inactivity Reminder - Please Log In");
+
+            helper.setText("""
+            <html>
+            <body style="font-family: Arial, sans-serif; color:#333;">
+                <h2>Hello %s,</h2>
+
+                <p>We noticed that you have not logged in to the system for the past <b>28 days</b>.</p>
+
+                <p>Please log in to your account to continue accessing tutoring sessions, updates, and important notices.</p>
+
+                <p>If you need assistance, feel free to contact our support team.</p>
+
+                <br/>
+
+            </body>
+            </html>
+            """.formatted(studentName), true);
+
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            log.error("Failed to send inactivity email to student: {}", studentEmail, e);
+        }
+    }
+
+    @Async
+    public void sendTutorWarningEmail(String tutorEmail,
+                                      String tutorName,
+                                      String studentName) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(tutorEmail);
+            helper.setSubject("Student Inactivity Alert");
+
+            helper.setText("""
+            <html>
+            <body style="font-family: Arial, sans-serif; color:#333;">
+                <h2>Hello %s,</h2>
+
+                <p>This is to inform you that your allocated student 
+                <b>%s</b> has not logged in to the system for the past <b>28 days</b>.</p>
+
+                <p>Please consider contacting the student and providing support if needed.</p>
+
+                <br/>
+            </body>
+            </html>
+            """.formatted(tutorName, studentName), true);
+
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            log.error("Failed to send tutor warning email to: {}", tutorEmail, e);
+        }
     }
 
     private String getAccountHtmlMessage(String password) {

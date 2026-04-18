@@ -1,6 +1,7 @@
 package org.ewsd.repository.user;
 
 import org.ewsd.dto.report.TutorMessageAverageResponse;
+import org.ewsd.entity.student.Student;
 import org.ewsd.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,10 +21,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
     @Query("""
-    SELECT u FROM User u
-    WHERE u.lastLoginTime <= :date
+        SELECT s FROM Student s
+        WHERE s.user.lastLoginTime <= :date
     """)
-    List<User> findInactiveUsers(LocalDateTime date);
+    List<Student> findInactiveStudents(LocalDateTime date);
 
     @Query("""
         select u

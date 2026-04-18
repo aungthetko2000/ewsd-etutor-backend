@@ -1,7 +1,9 @@
 package org.ewsd.service.system;
 
 import lombok.RequiredArgsConstructor;
+import org.ewsd.entity.student.Student;
 import org.ewsd.entity.user.User;
+import org.ewsd.repository.student.StudentRepository;
 import org.ewsd.repository.user.UserRepository;
 import org.ewsd.service.email.EmailService;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -10,22 +12,27 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//@Service
-//@RequiredArgsConstructor
-//public class InactivityScheduler {
-//
-//    private final UserRepository userRepository;
-//    private final EmailService emailService;
-//
-//    @Scheduled(fixedRate = 30000)
-//    public void checkInactiveUsers() {
-//
-//        LocalDateTime threshold = LocalDateTime.now().minusMinutes(1);
-//
-//        List<User> users = userRepository.findInactiveUsers(threshold);
-//
-//        for (User user : users) {
-//            emailService.sendInactivityEmail(user.getEmail());
-//        }
-//    }
-//}
+@Service
+@RequiredArgsConstructor
+public class InactivityScheduler {
+
+    private final StudentRepository studentRepository;
+    private final EmailService emailService;
+
+    @Scheduled(cron = "0 0 2 * * ?", zone = "Asia/Yangon")
+    public void checkInactiveStudents() {
+
+        LocalDateTime threshold = LocalDateTime.now().minusDays(28);
+
+        List<Student> students = studentRepository.findInactiveStudents(threshold);
+
+        for (Student student : students) {
+            emailService.sendInactivityEmail(student.getUser().getEmail(), student.getFullName());
+
+            if (student.getTutor() != null) {
+                emailService.sendTutorWarningEmail(student.getTutor().getUser().getEmail(),
+                        student.getTutor().getFullName(), student.getFullName());
+            }
+        }
+    }
+}
