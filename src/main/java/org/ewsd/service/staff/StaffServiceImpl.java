@@ -78,6 +78,7 @@ public class StaffServiceImpl implements StaffService {
 
         for (Student student : studentsToEmail) {
             emailService.sendReallocationMailToStudent(student, tutor);
+            emailService.sendReallocationMailToTutor(student, tutor);
         }
 
         return responses;

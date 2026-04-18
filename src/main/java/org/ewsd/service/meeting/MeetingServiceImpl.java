@@ -5,16 +5,20 @@ import lombok.RequiredArgsConstructor;
 import org.ewsd.constants.SecurityConstants;
 import org.ewsd.dto.meeting.MeetingConfirmationRequest;
 import org.ewsd.dto.meeting.StudentMeetingDashboardDto;
+import org.ewsd.dto.note.MeetingNoteRequest;
+import org.ewsd.dto.note.MeetingNoteResponse;
 import org.ewsd.dto.schedule.MeetingRequestDto;
 import org.ewsd.dto.schedule.MeetingResponseDto;
 import org.ewsd.dto.student.StudentResponseDto;
 import org.ewsd.entity.meeting.Meeting;
+import org.ewsd.entity.note.SessionNote;
 import org.ewsd.entity.student.Student;
 import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
 import org.ewsd.enumeration.MeetingStatus;
 import org.ewsd.enumeration.NotificationType;
 import org.ewsd.repository.meeting.MeetingRepository;
+import org.ewsd.repository.note.SessionNoteRepository;
 import org.ewsd.repository.student.StudentRepository;
 import org.ewsd.repository.tutor.TutorRepository;
 import org.ewsd.repository.user.UserRepository;
@@ -39,6 +43,7 @@ public class MeetingServiceImpl implements MeetingService {
     private final JwtUtil jwtUtil;
     private final StudentRepository studentRepository;
     private final NotificationService notificationService;
+    private final SessionNoteRepository sessionNoteRepository;
 
     @Override
     @Transactional
@@ -222,5 +227,30 @@ public class MeetingServiceImpl implements MeetingService {
                     .build();
 
         }).toList();
+    }
+
+    @Override
+    public String saveMeetingNote(MeetingNoteRequest request) {
+        Meeting meeting = meetingRepository.findById(request.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Meeting was not found"));
+        SessionNote sessionNote = new SessionNote();
+        sessionNote.setMeeting(meeting);
+        sessionNote.setSessionNote(request.getNote());
+        sessionNoteRepository.save(sessionNote);
+        return "Meeting note successfully saved";
+    }
+
+    @Override
+    public MeetingNoteResponse getMeetingNoteById(Long id) {
+        SessionNote sessionNote = sessionNoteRepository.findByMeetingId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Session Note was not found"));
+        return mapToDto(sessionNote);
+    }
+
+    private MeetingNoteResponse mapToDto(SessionNote sessionNote) {
+        return MeetingNoteResponse.builder()
+                .id(sessionNote.getId())
+                .sessionNote(sessionNote.getSessionNote())
+                .build();
     }
 }

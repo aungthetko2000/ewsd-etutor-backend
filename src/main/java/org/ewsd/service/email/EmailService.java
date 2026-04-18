@@ -63,6 +63,29 @@ public class EmailService {
         }
     }
 
+    @Async
+    public void sendReallocationMailToTutor(Student student, Tutor tutor) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(tutor.getUser().getEmail());
+            helper.setSubject("New Student Assigned");
+
+            helper.setText("""
+                <h2>Hello %s</h2>
+                <p>A student has been assigned to you.</p>
+                <p><b>Student Name:</b> %s</p>
+                """
+                    .formatted(tutor.getFullName(), student.getFullName()), true);
+
+            javaMailSender.send(message);
+        } catch (Exception e) {
+            log.error("Tutor mail failed", e);
+        }
+
+    }
+
     private String getAccountHtmlMessage(String password) {
         return """
         <!DOCTYPE html>

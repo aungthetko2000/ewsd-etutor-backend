@@ -44,7 +44,7 @@ public class TutorDataSeeder implements CommandLineRunner {
 
         List<User> tutorUsers = List.of(
                 User.builder()
-                        .email("tutor@example.com")
+                        .email("thethmukhaing@gmail.com")
                         .password(passwordEncoder.encode("password123"))
                         .firstName("U Zaw")
                         .lastName("Lin")

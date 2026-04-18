@@ -31,7 +31,9 @@ INSERT INTO permissions (name, description, category) VALUES
 ('GET_ALLOCATION_LIST', 'View allocation list', 'ALLOCATE'),
 ('EDIT_COMMENT', 'Can edit own comment', 'COMMENT'),
 ('DELETE_COMMENT', 'Can delete own comment', 'COMMENT'),
-('VIEW_STATISTICS_REPORT', 'View statistics report', 'REPORT');
+('VIEW_STATISTICS_REPORT', 'View statistics report', 'REPORT'),
+('SAVE_MEETING_NOTE', 'View statistics report', 'SCHEDULE'),
+('GET_MEETING_NOTE', 'View statistics report', 'SCHEDULE');
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
@@ -126,7 +128,9 @@ WHERE r.name = 'TUTOR'
     'VIEW_ASSIGNMENT',
     'VIEW_ALL_FEEDBACKS',
     'EDIT_COMMENT',
-    'DELETE_COMMENT'
+    'DELETE_COMMENT',
+    'SAVE_MEETING_NOTE',
+    'GET_MEETING_NOTE'
   );
 
 -- ADMIN PERMISSIONS

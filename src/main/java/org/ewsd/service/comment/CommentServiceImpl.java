@@ -70,12 +70,16 @@ public class CommentServiceImpl implements CommentService {
         Comment savedComment = commentRepository.save(comment);
 
         if (submission != null) {
-            notificationService.sendAndSaveComment(
-                    submission.getStudent().getUser(),
-                    savedComment,
-                    NotificationType.COMMENT,
-                    "Someone commented on your submission"
-            );
+            Long ownerId = submission.getStudent().getUser().getId();
+            Long commenterId = savedComment.getAuthorId();
+            if (!ownerId.equals(commenterId)) {
+                notificationService.sendAndSaveComment(
+                        submission.getStudent().getUser(),
+                        savedComment,
+                        NotificationType.COMMENT,
+                        "Someone commented on your submission"
+                );
+            }
         }
 
         return mapToDto(savedComment);
