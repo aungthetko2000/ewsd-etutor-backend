@@ -7,6 +7,7 @@ import org.ewsd.entity.submission.Submission;
 import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,11 +25,15 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fullName;
+    private String fatherName;
+    private LocalDate dob;
+    private String gender;
     private Integer age;
     private String session;
-    private LocalDateTime registrationDate;
-    private String phone;
+    private String emergencyContact;
     private String address;
+    private LocalDate registrationDate;
+    private String phone;
     private String course;
 
     @OneToOne
@@ -48,6 +53,6 @@ public class Student {
 
     @PrePersist
     protected void onCreate() {
-        this.registrationDate = LocalDateTime.now();
+        this.registrationDate = LocalDate.now();
     }
 }

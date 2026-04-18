@@ -7,9 +7,11 @@ import org.ewsd.dto.allocation.TutorAllocationResponse;
 import org.ewsd.dto.report.MessageLastDaysDto;
 import org.ewsd.dto.report.TutorMessageAverageResponse;
 import org.ewsd.dto.response.ApiResponse;
+import org.ewsd.dto.student.StudentRegisterRequest;
 import org.ewsd.dto.student.StudentResponseDto;
 import org.ewsd.service.report.StatisticsService;
 import org.ewsd.service.staff.StaffService;
+import org.ewsd.service.student.StudentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,6 +26,7 @@ public class StaffController {
 
     private final StaffService staffService;
     private final StatisticsService statisticsService;
+    private final StudentService studentService;
 
     @PostMapping("/bulk-allocate")
     @PreAuthorize("(hasRole('STAFF') or hasRole('AUTHORIZE_STAFF')) and hasAuthority('BULK_ALLOCATION')")
@@ -71,5 +74,12 @@ public class StaffController {
         List<MessageLastDaysDto> reportResponse = statisticsService.getMessagesLast7Days();
         ApiResponse<List<MessageLastDaysDto>> response = ApiResponse.bulkSuccess(reportResponse, "Report retrieved successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @PostMapping("/register")
+    @PreAuthorize("hasRole('STAFF') AND hasAuthority('CREATE_STUDENT')")
+    public ResponseEntity<ApiResponse<StudentResponseDto>> registerStudent(@RequestBody StudentRegisterRequest request) {
+        StudentResponseDto response = studentService.registerStudent(request);
+        return ResponseEntity.ok(ApiResponse.success(response, "Student created successfully"));
     }
 }

@@ -64,6 +64,33 @@ public class EmailService {
     }
 
     @Async
+    public void sendSuccessRegisterMailToStudent(Student student, String password) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(student.getUser().getEmail());
+            helper.setSubject("Owl Study Enrollment");
+
+            helper.setText("""
+            <h2>Hello %s</h2>
+            <p>Enrollment Successful</p>
+            <p><b>Your password :</b> %s</p>
+            <p><b>Don not share sensitive credential password.</p>
+            """
+                    .formatted(
+                            student.getFullName(),
+                            password
+                    ), true);
+
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            log.error("Student mail failed", e);
+        }
+    }
+
+    @Async
     public void sendReallocationMailToTutor(Student student, Tutor tutor) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();

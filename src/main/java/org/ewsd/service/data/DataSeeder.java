@@ -18,6 +18,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -70,9 +71,9 @@ public class DataSeeder implements CommandLineRunner {
             Student student = Student.builder()
                     .user(studentUser)
                     .fullName(studentUser.getFirstName() + " " + studentUser.getLastName())
-                    .age(18 + (i % 5)) // random age 18-22
+                    .age(18 + (i % 5))
                     .session("UOG-23")
-                    .registrationDate(LocalDateTime.now())
+                    .registrationDate(LocalDate.now())
                     .phone("0979518272" + i)
                     .address("Yangon")
                     .course("Diploma In Information")

@@ -15,6 +15,8 @@ import org.ewsd.repository.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,11 +61,9 @@ public class StudentService {
                 .email(student.getUser().getEmail())
                 .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
                 .assigned(student.getTutor() != null)
-                .email(student.getUser().getEmail()) //NEW
-                .age(student.getAge())       // NEW
-                .session(student.getSession())   // NEW
-
-                //New fields added
+                .email(student.getUser().getEmail())
+                .age(student.getAge())
+                .session(student.getSession())
                 .phone(student.getPhone())
                 .address(student.getAddress())
                 .course(student.getCourse())
@@ -73,22 +73,16 @@ public class StudentService {
 
     public StudentResponseDto registerStudent(StudentRegisterRequest request) {
 
-        // 1. Check duplicate email
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
 
-        // 2. Generate password
         String rawPassword = generateRandomPassword();
+        Role studentRole = roleRepository.findByName("STUDENT").orElseThrow(() -> new RuntimeException("Student role not found"));
 
-        // 3. Get role
-        Role studentRole = roleRepository.findByName("STUDENT")
-                .orElseThrow(() -> new RuntimeException("Student role not found"));
-
-        // 4. Create user
         User user = User.builder()
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(rawPassword)) // encode generated password
+                .password(passwordEncoder.encode(rawPassword))
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .enabled(true)
@@ -99,22 +93,27 @@ public class StudentService {
                 .customPermissions(new HashSet<>())
                 .build();
 
-        if (userRepository.existsByEmail(request.getEduEmail())) {
-            throw new RuntimeException("Email already exists");
-        }
-
         user = userRepository.save(user);
 
         Student student = Student.builder()
                 .fullName(request.getFirstName() + " " + request.getLastName())
-                .age(request.getAge())
-                .session(request.getGrade())
+                .fatherName(request.getFatherName())
+                .dob(request.getDob())
+                .gender(request.getGender())
+                .session(request.getSession())
+                .emergencyContact(request.getEmergencyContact())
+                .address(request.getAddress())
+                .registrationDate(request.getRegistrationDate())
+                .phone(request.getPhone())
+                .course(request.getCourse())
                 .user(user)
                 .build();
 
-        studentRepository.save(student);
-
-        return mapToDto(student);
+        Student savedStudent = studentRepository.save(student);
+        if (!savedStudent.getUser().getEmail().isBlank()) {
+            emailService.sendSuccessRegisterMailToStudent(student, rawPassword);
+        }
+        return mapToDto(savedStudent);
     }
 
     private String generateRandomPassword() {
