@@ -17,6 +17,8 @@ public  interface StudentRepository extends JpaRepository<Student, Long> {
 
     List<Student> findByTutorId(Long tutorId);
 
+    boolean existsByUser(User user);
+
     @Query("""
         select distinct u.email
         from Student s
