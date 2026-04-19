@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -94,9 +95,10 @@ public class StudentService {
                 .build();
 
         user = userRepository.save(user);
-
+        int age = calculateAge(request);
         Student student = Student.builder()
                 .fullName(request.getFirstName() + " " + request.getLastName())
+                .age(age)
                 .fatherName(request.getFatherName())
                 .dob(request.getDob())
                 .gender(request.getGender())
@@ -114,6 +116,15 @@ public class StudentService {
             emailService.sendSuccessRegisterMailToStudent(student, rawPassword);
         }
         return mapToDto(savedStudent);
+    }
+
+
+    private int calculateAge(StudentRegisterRequest request) {
+        LocalDate today = LocalDate.now();
+        if (request.getDob().isAfter(today)) {
+            throw new IllegalArgumentException("Date of birth cannot be in the future");
+        }
+        return Period.between(request.getDob(), today).getYears();
     }
 
     private String generateRandomPassword() {

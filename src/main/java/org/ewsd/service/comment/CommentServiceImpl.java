@@ -3,6 +3,7 @@ package org.ewsd.service.comment;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.comment.CommentRequestDTO;
 import org.ewsd.dto.comment.CommentResponseDto;
+import org.ewsd.dto.comment.EditCommentRequestDto;
 import org.ewsd.dto.student.StudentResponseDto;
 import org.ewsd.entity.comment.Comment;
 import org.ewsd.entity.blog.Blog;
@@ -18,6 +19,7 @@ import org.ewsd.service.comment.CommentService;
 import org.ewsd.service.notification.NotificationService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -107,6 +109,7 @@ public class CommentServiceImpl implements CommentService {
                 .orElseThrow(() -> new IllegalArgumentException("user was not found"));
 
         return CommentResponseDto.builder()
+                .userId(user.getId())
                 .id(comment.getId())
                 .description(comment.getDescription())
                 .whoComment(user.getFirstName() + ' ' +user.getLastName())
@@ -116,28 +119,18 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void updateComment(Long id, CommentRequestDTO dto, Long currentUserId, boolean isAdmin) {
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
-
-        if (!comment.getAuthorId().equals(currentUserId) && !isAdmin) {
-            throw new RuntimeException("Unauthorized: You cannot edit this comment.");
-        }
-
-        comment.setDescription(dto.getDescription());
+    public void updateComment(@RequestBody EditCommentRequestDto requestDto) {
+        Comment comment = commentRepository.findById(requestDto.getCommentId())
+                .orElseThrow(() -> new RuntimeException("Comment not found with id: " + requestDto.getCommentId()));
+        comment.setDescription(requestDto.getDescription());
         commentRepository.save(comment);
     }
 
     @Override
     @Transactional
-    public void deleteComment(Long id, Long currentUserId, boolean isAdmin) {
+    public void deleteComment(Long id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Comment not found with id: " + id));
-
-        if (!comment.getAuthorId().equals(currentUserId) && !isAdmin) {
-            throw new RuntimeException("Unauthorized: You cannot delete this comment.");
-        }
-
         commentRepository.delete(comment);
     }
 }

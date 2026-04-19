@@ -3,6 +3,7 @@ package org.ewsd.controller.comment;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.comment.CommentRequestDTO;
 import org.ewsd.dto.comment.CommentResponseDto;
+import org.ewsd.dto.comment.EditCommentRequestDto;
 import org.ewsd.dto.response.ApiResponse;
 import org.ewsd.service.comment.CommentService;
 import org.springframework.http.HttpStatus;
@@ -43,24 +44,17 @@ public class CommentController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping
     @PreAuthorize("(hasRole('STUDENT') OR hasRole('TUTOR')) AND hasAuthority('EDIT_COMMENT')")
-    public ResponseEntity<ApiResponse<String>> updateComment(
-            @PathVariable Long id,
-            @RequestBody CommentRequestDTO dto) {
-
-        commentService.updateComment(id, dto, dto.getAuthorId(), false);
+    public ResponseEntity<ApiResponse<String>> updateComment(@RequestBody EditCommentRequestDto requestDto) {
+        commentService.updateComment(requestDto);
         return ResponseEntity.ok(ApiResponse.success(null, "Comment updated successfully"));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("(hasRole('STUDENT') OR hasRole('TUTOR') OR hasRole('ADMIN')) AND hasAuthority('DELETE_COMMENT')")
-    public ResponseEntity<ApiResponse<String>> deleteComment(
-            @PathVariable Long id,
-            @RequestParam Long userId,
-            @RequestParam boolean isAdmin) {
-
-        commentService.deleteComment(id, userId, isAdmin);
+    @PreAuthorize("(hasRole('STUDENT') OR hasRole('TUTOR')) AND hasAuthority('DELETE_COMMENT')")
+    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable Long id) {
+        commentService.deleteComment(id);
         return ResponseEntity.ok(ApiResponse.success(null, "Comment deleted successfully"));
     }
 }

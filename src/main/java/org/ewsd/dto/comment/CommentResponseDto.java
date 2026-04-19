@@ -17,5 +17,5 @@ public class CommentResponseDto {
     private String description;
     private String whoComment;
     private LocalDateTime timeStamp;
-
+    private Long userId;
 }
