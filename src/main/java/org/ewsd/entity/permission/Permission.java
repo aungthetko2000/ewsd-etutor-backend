@@ -1,17 +1,15 @@
 package org.ewsd.entity.permission;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "permissions")
-@AllArgsConstructor
-@NoArgsConstructor
-@Data
-@Builder
 public class Permission {
 
     @Id

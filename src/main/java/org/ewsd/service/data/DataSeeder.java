@@ -1,11 +1,13 @@
 package org.ewsd.service.data;
 
 import lombok.RequiredArgsConstructor;
+import org.ewsd.entity.admin.Admin;
 import org.ewsd.entity.role.Role;
 import org.ewsd.entity.staff.Staff;
 import org.ewsd.entity.student.Student;
 import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
+import org.ewsd.repository.admin.AdminRepository;
 import org.ewsd.repository.role.RoleRepository;
 import org.ewsd.repository.staff.StaffRepository;
 import org.ewsd.repository.student.StudentRepository;
@@ -16,7 +18,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,63 +35,52 @@ public class DataSeeder implements CommandLineRunner {
     private final UserRepository userRepository;
     private final StaffRepository staffRepository;
     private final StudentRepository studentRepository;
-    private final TutorRepository tutorRepository;
+    private final AdminRepository adminRepository;
 
     @Override
     public void run(String... args) throws Exception {
+
         Role staffRole = roleRepository.findByName("STAFF")
-                .orElseThrow(() -> new RuntimeException("STUDENT role not found! Run data.sql first."));
+                .orElseThrow(() -> new RuntimeException("STAFF role not found! Run data.sql first."));
+
+        Role superStaffRole = roleRepository.findByName("AUTHORIZE_STAFF")
+                .orElseThrow(() -> new RuntimeException("AUTHORIZE_STAFF role not found! Run data.sql first."));
 
         Role studentRole = roleRepository.findByName("STUDENT")
-                .orElseThrow(()->new RuntimeException("Student role not found"));
+                .orElseThrow(()->new RuntimeException("Student role not found! Run data.sql first."));
 
+        for (int i = 1; i <= 10; i++) {
 
-        List<User> userLists = List.of(
-                new User(null, "mgmg@example.com", passwordEncoder.encode("password")
-                , "Mg", "Mg", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
-                        new HashSet<>(), null, null, null, null, null),
-                new User(null, "aungaung@example.com", passwordEncoder.encode("password"),
-                        "Aung", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "kyaw@example.com", passwordEncoder.encode("password")
-                        , "Kyaw", "Kyaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole),
-                        new HashSet<>(), null, null, null, null, null),
-                new User(null, "hla@example.com", passwordEncoder.encode("password"),
-                        "Hla", "Hla", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(), null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "su@example.com", passwordEncoder.encode("password"),
-                "Su", "Su", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "moe@example.com", passwordEncoder.encode("password"),
-                "Moe", "Moe", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "zaw@example.com", passwordEncoder.encode("password"),
-                        "Zaw", "Zaw", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "ko@example.com", passwordEncoder.encode("password"),
-                        "Ko", "Ko", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null,null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null),
-                new User(null, "myoaung@example.com", passwordEncoder.encode("password"),
-                        "Myo", "Aung", true, true, true, true, LocalDateTime.now(), LocalDateTime.now(),null, null, Set.of(studentRole)
-                        , new HashSet<>(), null, null, null, null, null)
-        );
+            String email = "dev.aungthetko+student" + i + "@gmail.com";
 
-        List<User> savedUser = userRepository.saveAll(userLists);
+            User studentUser = User.builder()
+                    .email(email)
+                    .password(passwordEncoder.encode("password123"))
+                    .firstName("Student")
+                    .lastName(String.valueOf(i))
+                    .accountNonLocked(true)
+                    .enabled(true)
+                    .accountNonExpired(true)
+                    .credentialsNonExpired(true)
+                    .roles(Set.of(studentRole))
+                    .customPermissions(new HashSet<>())
+                    .build();
 
-        List<Tutor> tutors = tutorRepository.findAll();
-        Tutor firstTutor = tutors.get(0);
+            studentUser = userRepository.save(studentUser);
 
-        List<Student> studentList = savedUser.stream().map(
-                user -> Student.builder()
-                        .fullName(user.getFirstName() + " " + user.getLastName())
-                        .age(16)
-                        .grade("Grade 10")
-                        .user(user)
-                        .tutor(firstTutor)
-                        .build()
-        ).toList();
+            Student student = Student.builder()
+                    .user(studentUser)
+                    .fullName(studentUser.getFirstName() + " " + studentUser.getLastName())
+                    .age(18 + (i % 5))
+                    .session("UOG-23")
+                    .registrationDate(LocalDate.now())
+                    .phone("0979518272" + i)
+                    .address("Yangon")
+                    .course("Diploma In Information")
+                    .build();
 
-        studentRepository.saveAll(studentList);
+            studentRepository.save(student);
+        }
 
         User staffUser = User.builder()
                 .email("staff@example.com")
@@ -108,6 +101,48 @@ public class DataSeeder implements CommandLineRunner {
                 .user(staffUser)
                 .build();
         staffRepository.save(staff);
-    }
 
+        User autorizeStaff = User.builder()
+                .email("superstaff@example.com")
+                .password(passwordEncoder.encode("password123"))
+                .firstName("Super")
+                .lastName("Staff")
+                .accountNonLocked(true)
+                .enabled(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .roles(Set.of(superStaffRole))
+                .customPermissions(new HashSet<>())
+                .build();
+        autorizeStaff = userRepository.save(autorizeStaff);
+        Staff superStaff = Staff.builder()
+                .fullName(autorizeStaff.getFirstName() + autorizeStaff.getLastName())
+                .user(autorizeStaff)
+                .build();
+        staffRepository.save(superStaff);
+
+        Role adminRole = roleRepository.findByName("ADMIN")
+                .orElseThrow(() -> new RuntimeException("Error: Role ADMIN is not found."));
+
+        User adminUser = User.builder()
+                .email("admin@etutor.com")
+                .password(passwordEncoder.encode("admin123"))
+                .firstName("System")
+                .lastName("Admin")
+                .roles(Set.of(adminRole))
+                .enabled(true)
+                .accountNonLocked(true)
+                .accountNonExpired(true)
+                .credentialsNonExpired(true)
+                .build();
+
+        adminUser = userRepository.save(adminUser);
+
+        Admin adminProfile = Admin.builder()
+                .fullName(adminUser.getFirstName() + " " + adminUser.getLastName())
+                .user(adminUser)
+                .build();
+
+        adminRepository.save(adminProfile);
+    }
 }

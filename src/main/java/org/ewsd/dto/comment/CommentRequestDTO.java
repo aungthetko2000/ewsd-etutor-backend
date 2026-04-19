@@ -12,5 +12,6 @@ public class CommentRequestDTO {
     private String description;
     private Long authorId;
     private Long blogId;
+    private Long submissionId;
 
 }

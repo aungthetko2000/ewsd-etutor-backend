@@ -4,16 +4,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.constants.SecurityConstants;
 import org.ewsd.dto.meeting.MeetingConfirmationRequest;
+import org.ewsd.dto.meeting.StudentMeetingDashboardDto;
+import org.ewsd.dto.note.MeetingNoteRequest;
+import org.ewsd.dto.note.MeetingNoteResponse;
 import org.ewsd.dto.schedule.MeetingRequestDto;
 import org.ewsd.dto.schedule.MeetingResponseDto;
 import org.ewsd.dto.student.StudentResponseDto;
 import org.ewsd.entity.meeting.Meeting;
+import org.ewsd.entity.note.SessionNote;
 import org.ewsd.entity.student.Student;
 import org.ewsd.entity.tutor.Tutor;
 import org.ewsd.entity.user.User;
 import org.ewsd.enumeration.MeetingStatus;
 import org.ewsd.enumeration.NotificationType;
 import org.ewsd.repository.meeting.MeetingRepository;
+import org.ewsd.repository.note.SessionNoteRepository;
 import org.ewsd.repository.student.StudentRepository;
 import org.ewsd.repository.tutor.TutorRepository;
 import org.ewsd.repository.user.UserRepository;
@@ -23,6 +28,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +43,7 @@ public class MeetingServiceImpl implements MeetingService {
     private final JwtUtil jwtUtil;
     private final StudentRepository studentRepository;
     private final NotificationService notificationService;
+    private final SessionNoteRepository sessionNoteRepository;
 
     @Override
     @Transactional
@@ -85,7 +93,7 @@ public class MeetingServiceImpl implements MeetingService {
             notificationService.sendAndSave(
                     studentUser,
                     savedMeeting,
-                    NotificationType.MEETING_SCHEDULED,
+                    NotificationType.MEETING,
                     message
             );
         });
@@ -128,7 +136,7 @@ public class MeetingServiceImpl implements MeetingService {
     @Override
     @Transactional
     public void updateMeetingStatus(Long id, MeetingConfirmationRequest request) {
-        Meeting meeting = meetingRepository.findById(id)
+        Meeting meeting = meetingRepository.findById(10L)
                 .orElseThrow(() -> new IllegalArgumentException("Meeting was not found"));
 
         if (request.getMeetingStatus() == MeetingStatus.PENDING) {
@@ -171,6 +179,78 @@ public class MeetingServiceImpl implements MeetingService {
                 .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
                 .assigned(student.getTutor() != null)
                 .email(student.getUser().getEmail())
+                .build();
+    }
+
+    //View today’s meetings on student dashboard
+    @Override
+    public List<StudentMeetingDashboardDto> getTodayMeetingsForStudent(HttpServletRequest request) {
+
+        String bearer = request.getHeader("Authorization");
+        String token = bearer.substring(7);
+        String email = jwtUtil.extractEmail(token);
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Student student = user.getStudent();
+
+        LocalDate today = LocalDate.now();
+
+        List<Meeting> meetings =
+                meetingRepository.findTodayMeetingsByStudent(student.getId(), today);
+
+        return meetings.stream().map(meeting -> {
+
+            LocalTime now = LocalTime.now();
+
+            String time;
+            String status;
+
+            if (now.isAfter(meeting.getStartTime()) && now.isBefore(meeting.getEndTime())) {
+                time = "On Going";
+                status = "ongoing";
+            } else {
+                time = meeting.getStartTime().toString(); // you can format later
+                status = "upcoming";
+            }
+
+            String tutorName = meeting.getTutor().getUser().getFirstName()
+                    + " " + meeting.getTutor().getUser().getLastName();
+
+            return StudentMeetingDashboardDto.builder()
+//                    .id(meeting.getId())
+//                    .name(tutorName)
+                    .session(meeting.getMeetingTitle())
+                    .time(time)
+                    .status(status)
+                    .build();
+
+        }).toList();
+    }
+
+    @Override
+    public String saveMeetingNote(MeetingNoteRequest request) {
+        Meeting meeting = meetingRepository.findById(request.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Meeting was not found"));
+        SessionNote sessionNote = new SessionNote();
+        sessionNote.setMeeting(meeting);
+        sessionNote.setSessionNote(request.getNote());
+        sessionNoteRepository.save(sessionNote);
+        return "Meeting note successfully saved";
+    }
+
+    @Override
+    public MeetingNoteResponse getMeetingNoteById(Long id) {
+        SessionNote sessionNote = sessionNoteRepository.findByMeetingId(id)
+                .orElseThrow(() -> new IllegalArgumentException("Session Note was not found"));
+        return mapToDto(sessionNote);
+    }
+
+    private MeetingNoteResponse mapToDto(SessionNote sessionNote) {
+        return MeetingNoteResponse.builder()
+                .id(sessionNote.getId())
+                .sessionNote(sessionNote.getSessionNote())
                 .build();
     }
 }

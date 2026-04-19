@@ -22,23 +22,10 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping
-    @PreAuthorize("hasRole('STAFF') AND hasAuthority('BULK_ALLOCATION')")
+    @PreAuthorize("(hasRole('STAFF') OR hasRole('AUTHORIZE_STAFF')) AND hasAuthority('BULK_ALLOCATION')")
     public ResponseEntity<ApiResponse<List<StudentResponseDto>>> getAllStudents(@RequestParam(required = false) Boolean unassignedOnly) {
         List<StudentResponseDto> tutorResponse = studentService.getStudents(unassignedOnly);
         ApiResponse<List<StudentResponseDto>> response = ApiResponse.success(tutorResponse, "Retrieve all unassigned successfully");
         return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @PostMapping("/register")
-    @PreAuthorize("hasRole('STAFF') AND hasAuthority('CREATE_STUDENT')")
-    public ResponseEntity<ApiResponse<StudentResponseDto>> registerStudent(
-            @RequestBody StudentRegisterRequest request
-    ) {
-
-        StudentResponseDto response = studentService.registerStudent(request);
-
-        return ResponseEntity.ok(
-                ApiResponse.success(response, "Student created successfully")
-        );
     }
 }

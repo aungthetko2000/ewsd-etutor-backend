@@ -3,6 +3,8 @@ package org.ewsd.service.email;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.ewsd.entity.student.Student;
+import org.ewsd.entity.tutor.Tutor;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
@@ -31,6 +33,150 @@ public class EmailService {
             javaMailSender.send(mimeMessage);
         } catch (Exception e) {
             log.error("Error sending HTML mail: ", e);
+        }
+    }
+
+    @Async
+    public void sendReallocationMailToStudent(Student student, Tutor tutor) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(student.getUser().getEmail());
+            helper.setSubject("Tutor Reallocation Notice");
+
+            helper.setText("""
+            <h2>Hello %s</h2>
+            <p>Your tutor has been updated.</p>
+            <p><b>New Tutor:</b> %s</p>
+            """
+                    .formatted(
+                            student.getFullName(),
+                            tutor.getFullName()
+                    ), true);
+
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            log.error("Student mail failed", e);
+        }
+    }
+
+    @Async
+    public void sendSuccessRegisterMailToStudent(Student student, String password) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(student.getUser().getEmail());
+            helper.setSubject("Owl Study Enrollment");
+
+            helper.setText("""
+            <h2>Hello %s</h2>
+            <p>Enrollment Successful</p>
+            <p><b>Your password :</b> %s</p>
+            <p><b>Don not share sensitive credential password.</p>
+            """
+                    .formatted(
+                            student.getFullName(),
+                            password
+                    ), true);
+
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            log.error("Student mail failed", e);
+        }
+    }
+
+    @Async
+    public void sendReallocationMailToTutor(Student student, Tutor tutor) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(tutor.getUser().getEmail());
+            helper.setSubject("New Student Assigned");
+
+            helper.setText("""
+                <h2>Hello %s</h2>
+                <p>A student has been assigned to you.</p>
+                <p><b>Student Name:</b> %s</p>
+                """
+                    .formatted(tutor.getFullName(), student.getFullName()), true);
+
+            javaMailSender.send(message);
+        } catch (Exception e) {
+            log.error("Tutor mail failed", e);
+        }
+    }
+
+    @Async
+    public void sendInactivityEmail(String studentEmail, String studentName) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(studentEmail);
+            helper.setSubject("Inactivity Reminder - Please Log In");
+
+            helper.setText("""
+            <html>
+            <body style="font-family: Arial, sans-serif; color:#333;">
+                <h2>Hello %s,</h2>
+
+                <p>We noticed that you have not logged in to the system for the past <b>28 days</b>.</p>
+
+                <p>Please log in to your account to continue accessing tutoring sessions, updates, and important notices.</p>
+
+                <p>If you need assistance, feel free to contact our support team.</p>
+
+                <br/>
+
+            </body>
+            </html>
+            """.formatted(studentName), true);
+
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            log.error("Failed to send inactivity email to student: {}", studentEmail, e);
+        }
+    }
+
+    @Async
+    public void sendTutorWarningEmail(String tutorEmail,
+                                      String tutorName,
+                                      String studentName) {
+        try {
+            MimeMessage message = javaMailSender.createMimeMessage();
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(tutorEmail);
+            helper.setSubject("Student Inactivity Alert");
+
+            helper.setText("""
+            <html>
+            <body style="font-family: Arial, sans-serif; color:#333;">
+                <h2>Hello %s,</h2>
+
+                <p>This is to inform you that your allocated student 
+                <b>%s</b> has not logged in to the system for the past <b>28 days</b>.</p>
+
+                <p>Please consider contacting the student and providing support if needed.</p>
+
+                <br/>
+            </body>
+            </html>
+            """.formatted(tutorName, studentName), true);
+
+            javaMailSender.send(message);
+
+        } catch (Exception e) {
+            log.error("Failed to send tutor warning email to: {}", tutorEmail, e);
         }
     }
 

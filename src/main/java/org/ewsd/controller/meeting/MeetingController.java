@@ -3,6 +3,9 @@ package org.ewsd.controller.meeting;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.ewsd.dto.meeting.MeetingConfirmationRequest;
+import org.ewsd.dto.meeting.StudentMeetingDashboardDto;
+import org.ewsd.dto.note.MeetingNoteRequest;
+import org.ewsd.dto.note.MeetingNoteResponse;
 import org.ewsd.dto.response.ApiResponse;
 import org.ewsd.dto.schedule.MeetingRequestDto;
 import org.ewsd.dto.schedule.MeetingResponseDto;
@@ -52,5 +55,35 @@ public class MeetingController {
     public ResponseEntity<String> updateMeetingStatus(@PathVariable Long meetingId, @RequestBody MeetingConfirmationRequest request) {
         meetingService.updateMeetingStatus(meetingId, request);
         return new ResponseEntity<>("Successfully Updated", HttpStatus.OK);
+    }
+
+    //View today’s meetings on student dashboard
+    @GetMapping("/student/today")
+    @PreAuthorize("hasRole('STUDENT')")
+    public ResponseEntity<ApiResponse<List<StudentMeetingDashboardDto>>> getTodayMeetingsForStudent(
+            HttpServletRequest request) {
+
+        List<StudentMeetingDashboardDto> response =
+                meetingService.getTodayMeetingsForStudent(request);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(response, "Today's meetings fetched successfully")
+        );
+    }
+
+    @PostMapping("/note")
+    @PreAuthorize("hasRole('TUTOR') AND hasAuthority('SAVE_MEETING_NOTE')")
+    public ResponseEntity<ApiResponse<String>> saveMeetingNotes(@RequestBody MeetingNoteRequest request) {
+        String respone = meetingService.saveMeetingNote(request);
+        ApiResponse<String> response = ApiResponse.success(respone, "Meeting Request Successfully");
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/note/{id}")
+    @PreAuthorize("hasRole('TUTOR') AND hasAuthority('GET_MEETING_NOTE')")
+    public ResponseEntity<ApiResponse<MeetingNoteResponse>> saveMeetingNotes(@PathVariable("id") Long id) {
+        MeetingNoteResponse respone = meetingService.getMeetingNoteById(id);
+        ApiResponse<MeetingNoteResponse> response = ApiResponse.success(respone, "Meeting Request Successfully");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

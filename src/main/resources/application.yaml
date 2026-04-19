@@ -1,6 +1,7 @@
 app:
   upload:
-    dir: ${user.home}/Documents/blogs
+    image: ${user.home}/Documents/blogs
+    document: ${user.home}/Documents/submission
 
 spring:
   mail:
@@ -14,8 +15,14 @@ spring:
           auth: true
           starttls:
             enable: true
+
   application:
     name: ewsd-etutor-backend
+
+  servlet:
+    multipart:
+      max-file-size: 25MB
+      max-request-size: 25MB
 
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver

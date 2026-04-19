@@ -28,7 +28,7 @@ public class Message {
     private LocalDateTime timestamp;
 
     @Column(name = "is_read")
-    private boolean isRead = false;
+    private boolean isRead;
 
     // Who sent the message
     @ManyToOne(fetch = FetchType.LAZY)
@@ -43,5 +43,6 @@ public class Message {
     @PrePersist
     protected void onCreate() {
         this.timestamp = LocalDateTime.now();
+        this.isRead = false;
     }
 }

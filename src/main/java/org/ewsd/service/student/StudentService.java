@@ -9,9 +9,15 @@ import org.ewsd.entity.user.User;
 import org.ewsd.repository.role.RoleRepository;
 import org.ewsd.repository.student.StudentRepository;
 import org.ewsd.repository.user.UserRepository;
+import org.ewsd.service.email.EmailService;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.ewsd.repository.user.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +31,7 @@ public class StudentService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public List<StudentResponseDto> getStudents(Boolean unassignedOnly) {
 
@@ -55,19 +62,28 @@ public class StudentService {
                 .email(student.getUser().getEmail())
                 .currentTutorId(student.getTutor() != null ? student.getTutor().getId() : null)
                 .assigned(student.getTutor() != null)
-                .age(student.getAge())       // NEW
-                .grade(student.getGrade())   // NEW
+                .email(student.getUser().getEmail())
+                .age(student.getAge())
+                .session(student.getSession())
+                .phone(student.getPhone())
+                .address(student.getAddress())
+                .course(student.getCourse())
+                .registrationDate(student.getRegistrationDate())
                 .build();
     }
 
     public StudentResponseDto registerStudent(StudentRegisterRequest request) {
 
-        Role studentRole = roleRepository.findByName("STUDENT")
-                .orElseThrow(() -> new RuntimeException("Student role not found"));
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        String rawPassword = generateRandomPassword();
+        Role studentRole = roleRepository.findByName("STUDENT").orElseThrow(() -> new RuntimeException("Student role not found"));
 
         User user = User.builder()
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password(passwordEncoder.encode(rawPassword))
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
                 .enabled(true)
@@ -79,17 +95,49 @@ public class StudentService {
                 .build();
 
         user = userRepository.save(user);
-
+        int age = calculateAge(request);
         Student student = Student.builder()
                 .fullName(request.getFirstName() + " " + request.getLastName())
-                .age(request.getAge())
-                .grade(request.getGrade())
+                .age(age)
+                .fatherName(request.getFatherName())
+                .dob(request.getDob())
+                .gender(request.getGender())
+                .session(request.getSession())
+                .emergencyContact(request.getEmergencyContact())
+                .address(request.getAddress())
+                .registrationDate(request.getRegistrationDate())
+                .phone(request.getPhone())
+                .course(request.getCourse())
                 .user(user)
                 .build();
 
-        studentRepository.save(student);
+        Student savedStudent = studentRepository.save(student);
+        if (!savedStudent.getUser().getEmail().isBlank()) {
+            emailService.sendSuccessRegisterMailToStudent(student, rawPassword);
+        }
+        return mapToDto(savedStudent);
+    }
 
-        return mapToDto(student);
+
+    private int calculateAge(StudentRegisterRequest request) {
+        LocalDate today = LocalDate.now();
+        if (request.getDob().isAfter(today)) {
+            throw new IllegalArgumentException("Date of birth cannot be in the future");
+        }
+        return Period.between(request.getDob(), today).getYears();
+    }
+
+    private String generateRandomPassword() {
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#";
+        StringBuilder password = new StringBuilder();
+
+        for (int i = 0; i < 8; i++) {
+            int index = (int) (Math.random() * chars.length());
+            password.append(chars.charAt(index));
+        }
+
+        return password.toString();
     }
 
 }
+

@@ -1,8 +1,8 @@
 package org.ewsd.enumeration;
 
 public enum NotificationType {
-    MEETING_SCHEDULED,
-    MEETING_CANCELLED,
+    MEETING,
+    COMMENT,
     MEETING_UPDATED,
     REMINDER
 }
