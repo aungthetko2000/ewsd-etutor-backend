@@ -120,7 +120,10 @@ public class TutorDataSeeder implements CommandLineRunner {
         );
 
 
-        List<User> savedUsers = userRepository.saveAll(tutorUsers);
+        List<User> savedUsers = tutorUsers.stream()
+                .map(user -> userRepository.findByEmail(user.getEmail())
+                        .orElseGet(() -> userRepository.save(user)))
+                .toList();
 
         List<Tutor> tutorList = IntStream.range(0, savedUsers.size())
                 .mapToObj(i -> Tutor.builder()
@@ -130,6 +133,10 @@ public class TutorDataSeeder implements CommandLineRunner {
                         .build())
                 .toList();
 
-        tutorRepository.saveAll(tutorList);
+        List<Tutor> safeTutors = tutorList.stream()
+                .filter(tutor -> !tutorRepository.existsByUserEmail(tutor.getUser().getEmail()))
+                .toList();
+
+        tutorRepository.saveAll(safeTutors);
     }
 }

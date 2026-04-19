@@ -33,19 +33,29 @@ INSERT INTO permissions (name, description, category) VALUES
 ('DELETE_COMMENT', 'Can delete own comment', 'COMMENT'),
 ('VIEW_STATISTICS_REPORT', 'View statistics report', 'REPORT'),
 ('SAVE_MEETING_NOTE', 'View statistics report', 'SCHEDULE'),
-('GET_MEETING_NOTE', 'View statistics report', 'SCHEDULE');
+('GET_MEETING_NOTE', 'View statistics report', 'SCHEDULE'),
+('VIEW_ANALYTICS', 'View chart report', 'REPORT'),
+('VIEW_ADMIN_DASHBOARD', 'View chart report', 'REPORT')
+
+ON DUPLICATE KEY UPDATE
+    description = VALUES(description),
+    category = VALUES(category);
 
 INSERT INTO roles (name, description) VALUES
 ('STUDENT', 'Student role'),
 ('TUTOR', 'Tutor role'),
 ('STAFF', 'Staff/Admin role'),
 ('AUTHORIZE_STAFF', 'Staff/Super Admin role'),
-('ADMIN', 'System Administrator role');
+('ADMIN', 'System Administrator role')
+
+ON DUPLICATE KEY UPDATE
+    description = VALUES(description);
 
 -- STAFF PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
-FROM roles r, permissions p
+FROM roles r
+JOIN permissions p
 WHERE r.name = 'STAFF'
   AND p.name IN (
     'VIEW_STAFF_DASHBOARD',
@@ -53,12 +63,19 @@ WHERE r.name = 'STAFF'
     'CREATE_STUDENT',
     'VIEW_EXCEPTION_REPORT',
     'GET_ALLOCATION_LIST'
-  );
+  )
+AND NOT EXISTS (
+    SELECT 1
+    FROM role_permissions rp
+    WHERE rp.role_id = r.id
+      AND rp.permission_id = p.id
+);
 
 -- AUTHORIZE STAFF PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
-FROM roles r, permissions p
+FROM roles r
+JOIN permissions p
 WHERE r.name = 'AUTHORIZE_STAFF'
   AND p.name IN (
     'VIEW_STAFF_DASHBOARD',
@@ -67,12 +84,19 @@ WHERE r.name = 'AUTHORIZE_STAFF'
     'VIEW_EXCEPTION_REPORT',
     'GET_ALLOCATION_LIST',
     'VIEW_STATISTICS_REPORT'
-  );
+  )
+AND NOT EXISTS (
+    SELECT 1
+    FROM role_permissions rp
+    WHERE rp.role_id = r.id
+      AND rp.permission_id = p.id
+);
 
 -- STUDENT PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
-FROM roles r, permissions p
+FROM roles r
+JOIN permissions p
 WHERE r.name = 'STUDENT'
   AND p.name IN (
     'VIEW_STUDENT_DASHBOARD',
@@ -95,12 +119,19 @@ WHERE r.name = 'STUDENT'
     'VIEW_ALL_FEEDBACKS',
     'EDIT_COMMENT',
     'DELETE_COMMENT'
-   );
+  )
+AND NOT EXISTS (
+    SELECT 1
+    FROM role_permissions rp
+    WHERE rp.role_id = r.id
+      AND rp.permission_id = p.id
+);
 
 -- TUTOR PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
-FROM roles r, permissions p
+FROM roles r
+JOIN permissions p
 WHERE r.name = 'TUTOR'
   AND p.name IN (
     'VIEW_TUTOR_DASHBOARD',
@@ -116,10 +147,7 @@ WHERE r.name = 'TUTOR'
     'POST_COMMENT',
     'VIEW_ALL_COMMENT',
     'GET_UNREAD_COUNT',
-    'GET_CHAT_HISTORY',
     'MARK_AS_READ',
-    'GET_UNREAD_COUNT',
-    'GET_CHAT_CONTACTS',
     'VIEW_ALL_USERS',
     'SUBMIT_DOCUMENT',
     'VIEW_INDIVIDUAL_DOCUMENT',
@@ -131,14 +159,27 @@ WHERE r.name = 'TUTOR'
     'DELETE_COMMENT',
     'SAVE_MEETING_NOTE',
     'GET_MEETING_NOTE'
-  );
+  )
+AND NOT EXISTS (
+    SELECT 1
+    FROM role_permissions rp
+    WHERE rp.role_id = r.id
+      AND rp.permission_id = p.id
+);
 
 -- ADMIN PERMISSIONS
 INSERT INTO role_permissions (role_id, permission_id)
 SELECT r.id, p.id
-FROM roles r, permissions p
+FROM roles r
+JOIN permissions p
 WHERE r.name = 'ADMIN'
   AND p.name IN (
       'VIEW_ANALYTICS',
       'VIEW_ADMIN_DASHBOARD'
-      );
+  )
+AND NOT EXISTS (
+    SELECT 1
+    FROM role_permissions rp
+    WHERE rp.role_id = r.id
+      AND rp.permission_id = p.id
+);

@@ -1,7 +1,7 @@
 app:
   upload:
-    image: ${user.home}/Documents/blogs
-    document: ${user.home}/Documents/submission
+    image: /var/app/uploads/images
+    document: /var/app/uploads/docs
 
 spring:
   mail:
@@ -26,17 +26,18 @@ spring:
 
   datasource:
     driverClassName: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/ewsd
-    username: root
-    password: StrongRoot@123!
+    url: jdbc:mysql://localhost:3306/ewsd?useSSL=false&serverTimezone=Asia/Bangkok
+    username: springuser
+    password: StrongPassword123!
 
   jpa:
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: create-drop # use 'validate' in production
+      ddl-auto: validate # use 'validate' in production
     show-sql: true
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
 
   sql:
