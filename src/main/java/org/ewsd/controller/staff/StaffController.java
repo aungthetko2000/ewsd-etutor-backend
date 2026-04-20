@@ -77,7 +77,7 @@ public class StaffController {
     }
 
     @PostMapping("/register")
-    @PreAuthorize("hasRole('STAFF') AND hasAuthority('CREATE_STUDENT')")
+    @PreAuthorize("(hasRole('STAFF') or hasRole('AUTHORIZE_STAFF')) AND hasAuthority('CREATE_STUDENT')")
     public ResponseEntity<ApiResponse<StudentResponseDto>> registerStudent(@RequestBody StudentRegisterRequest request) {
         StudentResponseDto response = studentService.registerStudent(request);
         return ResponseEntity.ok(ApiResponse.success(response, "Student created successfully"));
