@@ -77,9 +77,13 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://54.179.71.112:5173"));
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://www.owlstudy.academy",
+                "http://owlstudy.academy",
+                "https://www.owlstudy.academy",
+                "https://owlstudy.academy"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
 
