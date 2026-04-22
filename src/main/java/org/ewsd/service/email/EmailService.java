@@ -25,7 +25,7 @@ public class EmailService {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
-            helper.setFrom("chanmyae.huawei@gmail.com");
+            helper.setFrom("aungthetko.cue.mm@gmail.com");
             helper.setTo("chanmyae.cma30@gmail.com");
             helper.setSubject("email sent");
             helper.setText(getOtpHtmlMessage("123456"),true);
@@ -43,6 +43,7 @@ public class EmailService {
             MimeMessageHelper helper =
                     new MimeMessageHelper(message, true, "UTF-8");
 
+            helper.setFrom("aungthetko.cue.mm@gmail.com");
             helper.setTo(student.getUser().getEmail());
             helper.setSubject("Tutor Reallocation Notice");
 
@@ -67,8 +68,10 @@ public class EmailService {
     public void sendSuccessRegisterMailToStudent(Student student, String password) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
 
+            helper.setFrom("aungthetko.cue.mm@gmail.com");
             helper.setTo(student.getUser().getEmail());
             helper.setSubject("Owl Study Enrollment");
 
@@ -76,7 +79,7 @@ public class EmailService {
             <h2>Hello %s</h2>
             <p>Enrollment Successful</p>
             <p><b>Your password :</b> %s</p>
-            <p><b>Don not share sensitive credential password.</p>
+            <p><b>Do not share sensitive credential password.</b></p>
             """
                     .formatted(
                             student.getFullName(),
@@ -96,6 +99,7 @@ public class EmailService {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
+            helper.setFrom("aungthetko.cue.mm@gmail.com");
             helper.setTo(tutor.getUser().getEmail());
             helper.setSubject("New Student Assigned");
 
@@ -119,6 +123,7 @@ public class EmailService {
             MimeMessageHelper helper =
                     new MimeMessageHelper(message, true, "UTF-8");
 
+            helper.setFrom("aungthetko.cue.mm@gmail.com");
             helper.setTo(studentEmail);
             helper.setSubject("Inactivity Reminder - Please Log In");
 
@@ -147,14 +152,13 @@ public class EmailService {
     }
 
     @Async
-    public void sendTutorWarningEmail(String tutorEmail,
-                                      String tutorName,
-                                      String studentName) {
+    public void sendTutorWarningEmail(String tutorEmail, String tutorName, String studentName) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper =
                     new MimeMessageHelper(message, true, "UTF-8");
 
+            helper.setFrom("aungthetko.cue.mm@gmail.com");
             helper.setTo(tutorEmail);
             helper.setSubject("Student Inactivity Alert");
 

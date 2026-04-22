@@ -134,6 +134,7 @@ FROM roles r
 JOIN permissions p
 WHERE r.name = 'TUTOR'
   AND p.name IN (
+    'VIEW_NOTIFICATION',
     'VIEW_TUTOR_DASHBOARD',
     'VIEW_BLOG_LIST',
     'VIEW_ASSIGNED_STUDENTS',

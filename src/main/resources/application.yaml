@@ -1,14 +1,14 @@
 app:
   upload:
-    image: /var/app/uploads/images
-    document: /var/app/uploads/docs
+    image: ${user.home}/Documents/blogs
+    document: ${user.home}/Documents/submission
 
 spring:
   mail:
-    host: smtp.gmail.com
+    host: smtp-relay.brevo.com
     port: 587
-    username: chanmyae.huawei@gmail.com
-    password: hjgt sjbp kxqh ztoj
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -33,7 +33,7 @@ spring:
   jpa:
     defer-datasource-initialization: true
     hibernate:
-      ddl-auto: validate # use 'validate' in production
+      ddl-auto: create-drop # use 'validate' in production
     show-sql: true
     properties:
       hibernate:
