@@ -25,6 +25,7 @@ public class BlogController {
     private final BlogServiceImpl blogService;
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasAuthority('CREATE_BLOG')")
     public ResponseEntity<ApiResponse<BlogResponseDto>> createBlog(@Valid @ModelAttribute BlogCreateRequestDto blogCreateRequestDto, @RequestParam("image") MultipartFile file) {
         BlogResponseDto newBlog = blogService.createBlog(blogCreateRequestDto, file);
         ApiResponse<BlogResponseDto> response = ApiResponse.success(newBlog, "Blog created successfully");

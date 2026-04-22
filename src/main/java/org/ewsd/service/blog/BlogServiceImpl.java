@@ -65,6 +65,7 @@ public class BlogServiceImpl implements BlogService {
                         .content(blog.getContent())
                         .authorName(blog.getUser().getFirstName() + blog.getUser().getLastName())
                         .imageUrl(blog.getImageUrl())
+                        .favoriteCount(blog.getFavoriteCount())
                         .createdAt(blog.getCreatedAt())
                         .build())
                 .collect(Collectors.toList());
