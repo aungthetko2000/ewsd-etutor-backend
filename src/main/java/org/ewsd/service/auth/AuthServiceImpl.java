@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
         LocalDateTime now = LocalDateTime.now();
         user.setPreviousLoginTime(user.getLastLoginTime());
         user.setLastLoginTime(now);
-//        userRepository.save(user); //store to database
+        userRepository.save(user);
 
         List<String> permissions = userService.getUserPermissions(request.getEmail());
         List<String> roles = userService.getUserRoles(request.getEmail());
